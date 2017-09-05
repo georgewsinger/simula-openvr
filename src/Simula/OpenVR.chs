@@ -82,3 +82,64 @@ type VRActionSetHandle_t = {#type VRActionSetHandle_t#}
 
 type VRInputOriginHandle_t = {#type VRInputOriginHandle_t#}
 {#typedef VRInputOriginHandle_t VRInputOriginHandle_t#}
+
+{#pointer glSharedTextureHandle_t as GlSharedTextureHandle_t newtype#}
+deriving instance Eq GlSharedTextureHandle_t
+
+type GlInt_t = {#type GlInt_t#}
+{#typedef GlInt_t GlInt_t#}
+
+type GlUInt_t = {#type GlUInt_t#}
+{#typedef GlUInt_t GlUInt_t#}
+
+type SharedTextureHandle_t = {#type SharedTextureHandle_t#}
+{#typedef SharedTextureHandle_t SharedTextureHandle_t#}
+
+type DriverId_t = {#type DriverId_t#}
+{#typedef DriverId_t DriverId_t#}
+
+type TrackedDeviceIndex_t = {#type TrackedDeviceIndex_t#}
+{#typedef TrackedDeviceIndex_t TrackedDeviceIndex_t#}
+
+type PropertyContainerHandle_t = {#type PropertyContainerHandle_t#}
+{#typedef PropertyContainerHandle_t PropertyContainerHandle_t#}
+
+type PropertyTypeTag_t = {#type PropertyTypeTag_t#}
+{#typedef PropertyTypeTag_t PropertyTypeTag_t#}
+
+type VROverlayHandle_t = {#type VROverlayHandle_t#}
+{#typedef VROverlayHandle_t VROverlayHandle_t#}
+
+type TrackedCameraHandle_t = {#type TrackedCameraHandle_t#}
+{#typedef TrackedCameraHandle_t TrackedCameraHandle_t#}
+
+type ScreenshotHandle_t = {#type ScreenshotHandle_t#}
+{#typedef ScreenshotHandle_t ScreenshotHandle_t#}
+
+type VRComponentProperties = {#type VRComponentProperties#}
+{#typedef VRComponentProperties VRComponentProperties#}
+
+type TextureID_t = {#type TextureID_t#}
+{#typedef TextureID_t TextureID_t#}
+
+type VRNotificationId = {#type VRNotificationId#}
+{#typedef VRNotificationId VRNotificationId#}
+
+{- UNCLEAR HOW TO HANDLE THESE AT THIS POINT:
+   typedef EVRInitError HmdError;
+   typedef EVREye Hmd_Eye;
+   typedef EColorSpace ColorSpace;
+   typedef ETrackingResult HmdTrackingResult;
+   typedef ETrackedDeviceClass TrackedDeviceClass;
+   typedef ETrackingUniverseOrigin TrackingUniverseOrigin;
+   typedef ETrackedDeviceProperty TrackedDeviceProperty;
+   typedef ETrackedPropertyError TrackedPropertyError;
+   typedef EVRSubmitFlags VRSubmitFlags_t;
+   typedef EVRState VRState_t;
+   typedef ECollisionBoundsStyle CollisionBoundsStyle_t;
+   typedef EVROverlayError VROverlayError;
+   typedef EVRFirmwareError VRFirmwareError;
+   typedef EVRCompositorError VRCompositorError;
+   typedef EVRScreenshotError VRScreenshotsError; -}
+
+
