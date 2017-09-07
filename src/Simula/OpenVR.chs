@@ -125,23 +125,51 @@ type TextureID_t = {#type TextureID_t#}
 type VRNotificationId = {#type VRNotificationId#}
 {#typedef VRNotificationId VRNotificationId#}
 
-{- UNCLEAR HOW TO HANDLE THESE AT THIS POINT:
-   typedef EVRInitError HmdError;
-   typedef EVREye Hmd_Eye;
-   typedef EColorSpace ColorSpace;
-   typedef ETrackingResult HmdTrackingResult;
-   typedef ETrackedDeviceClass TrackedDeviceClass;
-   typedef ETrackingUniverseOrigin TrackingUniverseOrigin;
-   typedef ETrackedDeviceProperty TrackedDeviceProperty;
-   typedef ETrackedPropertyError TrackedPropertyError;
-   typedef EVRSubmitFlags VRSubmitFlags_t;
-   typedef EVRState VRState_t;
-   typedef ECollisionBoundsStyle CollisionBoundsStyle_t;
-   typedef EVROverlayError VROverlayError;
-   typedef EVRFirmwareError VRFirmwareError;
-   typedef EVRCompositorError VRCompositorError;
-   typedef EVRScreenshotError VRScreenshotsError; -}
+-- enum typedefs
 
+-- typedef EVRInitError HmdError;
+type HmdError = EVRInitError
+-- typedef EVREye Hmd_Eye;
+type HMD_Eye = EVREye
+
+--typedef EcolorSpace Colorspace;
+type ColorSpace = EColorSpace
+
+--typedef ETrackingResult HmdTrackingResult;
+type HmdTrackingResult = ETrackingResult
+
+--typedef ETrackedDeviceClass TrackedDeviceClass;
+type TrackedDeviceClass = ETrackedDeviceClass
+
+--typedef ETrackingUniverseOrigin TrackingUniverseOrigin;
+type TrackingUniverseOrigin = ETrackingUniverseOrigin
+
+--typedef ETrackedDeviceProperty TrackedDeviceProperty;
+type TrackedDeviceProperty = ETrackedDeviceProperty
+
+--typedef ETrackedPropertyError TrackedPropertyError;
+type TrackedPropertyError = ETrackedPropertyError
+
+--typedef EVRSubmitFlags VRSubmitFlags_t;
+type VRSubmitFlags_t = EVRSubmitFlags
+
+--typedef EVRState VRState_t;
+type EVRState_t  = EVRState
+
+--typedef ECollisionBoundsStyle CollisionBoundsStyle_t;
+type CollisionBoundsStyle_t = ECollisionBoundsStyle
+
+--typedef EVROverlayError VROverlayError;
+type VROverlayError = EVROverlayError
+
+--typedef EVRFirmwareError VRFirmwareError;
+type VRFirmwareError = EVRFirmwareError
+
+--typedef EVRCompositorError VRCompositorError;
+type VRCompositorError = EVRCompositorError
+
+--typedef EVRScreenshotError VRScreenshotsError; -}
+type VRScreenshotsError = EVRScreenshotError
 
 -- typedef structs
 {#pointer *HmdMatrix34_t as HmdMatrix34_t newtype#}
