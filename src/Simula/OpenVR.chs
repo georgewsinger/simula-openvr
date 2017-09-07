@@ -369,31 +369,13 @@ deriving instance Eq COpenVRContext
 deriving instance Storable COpenVRContext
 
 -- typedef unions
-{-
-typedef union
-{
-	VREvent_Reserved_t reserved;
-	VREvent_Controller_t controller;
-	VREvent_Mouse_t mouse;
-	VREvent_Scroll_t scroll;
-	VREvent_Process_t process;
-	VREvent_Notification_t notification;
-	VREvent_Overlay_t overlay;
-	VREvent_Status_t status;
-	VREvent_Keyboard_t keyboard;
-	VREvent_Ipd_t ipd;
-	VREvent_Chaperone_t chaperone;
-	VREvent_PerformanceTest_t performanceTest;
-	VREvent_TouchPadMove_t touchPadMove;
-	VREvent_SeatedZeroPoseReset_t seatedZeroPoseReset;
-} VREvent_Data_t;
+{#pointer *VREvent_Data_t as VREvent_Data_t newtype#}
+deriving instance Eq VREvent_Data_t
+deriving instance Storable VREvent_Data_t                            -- needed for unions?
 
-typedef union
-{
-	IntersectionMaskRectangle_t m_Rectangle;
-	IntersectionMaskCircle_t m_Circle;
-} VROverlayIntersectionMaskPrimitive_Data_t;
--}
+{#pointer *VROverlayIntersectionMaskPrimitive_Data_t as VROverlayIntersectionMaskPrimitive_Data_t newtype#}
+deriving instance Eq VROverlayIntersectionMaskPrimitive_Data_t
+deriving instance Storable VROverlayIntersectionMaskPrimitive_Data_t -- needed for unions?
 
 -- pure structs
 {-
