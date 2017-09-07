@@ -126,50 +126,21 @@ type VRNotificationId = {#type VRNotificationId#}
 {#typedef VRNotificationId VRNotificationId#}
 
 -- enum typedefs
-
--- typedef EVRInitError HmdError;
-type HmdError = EVRInitError
--- typedef EVREye Hmd_Eye;
-type HMD_Eye = EVREye
-
---typedef EcolorSpace Colorspace;
-type ColorSpace = EColorSpace
-
---typedef ETrackingResult HmdTrackingResult;
-type HmdTrackingResult = ETrackingResult
-
---typedef ETrackedDeviceClass TrackedDeviceClass;
-type TrackedDeviceClass = ETrackedDeviceClass
-
---typedef ETrackingUniverseOrigin TrackingUniverseOrigin;
+type HmdError               = EVRInitError
+type HMD_Eye                = EVREye
+type ColorSpace             = EColorSpace
+type HmdTrackingResult      = ETrackingResult
+type TrackedDeviceClass     = ETrackedDeviceClass
 type TrackingUniverseOrigin = ETrackingUniverseOrigin
-
---typedef ETrackedDeviceProperty TrackedDeviceProperty;
-type TrackedDeviceProperty = ETrackedDeviceProperty
-
---typedef ETrackedPropertyError TrackedPropertyError;
-type TrackedPropertyError = ETrackedPropertyError
-
---typedef EVRSubmitFlags VRSubmitFlags_t;
-type VRSubmitFlags_t = EVRSubmitFlags
-
---typedef EVRState VRState_t;
-type EVRState_t  = EVRState
-
---typedef ECollisionBoundsStyle CollisionBoundsStyle_t;
+type TrackedDeviceProperty  = ETrackedDeviceProperty
+type TrackedPropertyError   = ETrackedPropertyError
+type VRSubmitFlags_t        = EVRSubmitFlags
+type VRState_t              = EVRState
 type CollisionBoundsStyle_t = ECollisionBoundsStyle
-
---typedef EVROverlayError VROverlayError;
-type VROverlayError = EVROverlayError
-
---typedef EVRFirmwareError VRFirmwareError;
-type VRFirmwareError = EVRFirmwareError
-
---typedef EVRCompositorError VRCompositorError;
-type VRCompositorError = EVRCompositorError
-
---typedef EVRScreenshotError VRScreenshotsError; -}
-type VRScreenshotsError = EVRScreenshotError
+type VROverlayError         = EVROverlayError
+type VRFirmwareError        = EVRFirmwareError
+type VRCompositorError      = EVRCompositorError
+type VRScreenshotsError     = EVRScreenshotError
 
 -- typedef structs
 {#pointer *HmdMatrix34_t as HmdMatrix34_t newtype#}
