@@ -443,15 +443,35 @@ deriving instance Storable VR_IVRResources_FnTable
 deriving instance Eq VR_IVRDriverManager_FnTable
 deriving instance Storable VR_IVRDriverManager_FnTable
 
-{-global entry point functions; unclear how to handle at this point
-#if 0
-// Global entry points
-S_API intptr_t VR_InitInternal( EVRInitError *peError, EVRApplicationType eType );
-S_API void VR_ShutdownInternal();
-S_API bool VR_IsHmdPresent();
-S_API intptr_t VR_GetGenericInterface( const char *pchInterfaceVersion, EVRInitError *peError );
-S_API bool VR_IsRuntimeInstalled();
-S_API const char * VR_GetVRInitErrorAsSymbol( EVRInitError error );
-S_API const char * VR_GetVRInitErrorAsEnglishDescription( EVRInitError error );
-#endif
--}
+-- global entry point functions
+-- but first: two functions below make use of the `intptr_t` C type
+type IntPtr_t = {#type intptr_t#} -- defines Haskell type synonym IntPtr_t
+{#typedef IntPtr_t intptr_t#}     -- tells c2hs to associate C type intptr_t with HS type IntPtr_t
+
+-- S_API intptr_t VR_InitInternal( EVRInitError *peError, EVRApplicationType eType );
+foreign import capi "openvr/headers/openvr_capi.h VR_InitInternal" 
+    vrInitInternal :: Ptr ({#type EVRInitError}) -> EVRApplicationType -> IO {#type intptr_t#}
+
+-- S_API void VR_ShutdownInternal();
+foreign import capi "openvr/headers/openvr_capi.h VR_ShutdownInternal" 
+    vrShutdownInternal :: IO ()
+
+-- S_API bool VR_IsHmdPresent();
+foreign import capi "openvr/headers/openvr_capi.h VR_IsHmdPresent" 
+    vrIsHmdPresent :: IO Bool
+
+-- S_API intptr_t VR_GetGenericInterface( const char *pchInterfaceVersion, EVRInitError *peError );
+foreign import capi "openvr/headers/openvr_capi.h VR_GetGenericInterface" 
+    vrGetGenericInterface :: Ptr CChar -> Ptr ({#type EVRInitError}) -> IO {#type intptr_t#}
+
+-- S_API bool VR_IsRuntimeInstalled();
+foreign import capi "openvr/headers/openvr_capi.h VR_IsRuntimeInstalled" 
+    vrIsRuntimeInstalled :: IO Bool
+
+-- S_API const char * VR_GetVRInitErrorAsSymbol( EVRInitError error );
+foreign import capi "openvr/headers/openvr_capi.h VR_GetVRInitErrorAsSymbol"
+    vrGetVRInitErrorAsSymbol :: EVRInitError -> Ptr CChar
+
+-- S_API const char * VR_GetVRInitErrorAsEnglishDescription( EVRInitError error );
+foreign import capi "openvr/headers/openvr_capi.h VR_GetVRInitErrorAsEnglishDescription"
+    vrGetVRInitErrorAsEnglishDescription :: EVRInitError -> Ptr CChar
