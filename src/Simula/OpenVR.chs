@@ -13,7 +13,7 @@ import Foreign
 import Foreign.C
 import Linear
 
-#include <openvr/headers/openvr_capi.h>
+#include <openvr_capi.h>
 
 {#enum EVREye                                  {underscoreToCase} #}
 {#enum ETextureType                            {underscoreToCase} #}
@@ -65,9 +65,6 @@ import Linear
 {#enum EVRSettingsError                        {underscoreToCase} #}
 {#enum EVRScreenshotError                      {underscoreToCase} #}
 
-type OSVR_ChannelCount = {#type OSVR_ChannelCount#}
-{#typedef OSVR_ChannelCount OSVR_ChannelCount#}
-
 type PropertyContainerHandle_t = {#type PropertyContainerHandle_t#}
 {#typedef PropertyContainerHandle_t PropertyContainerHandle_t#}
 
@@ -75,7 +72,7 @@ type PropertyTypeTag_t = {#type PropertyTypeTag_t#}
 {#typedef PropertyTypeTag_t PropertyTypeTag_t#}
 
 type VRActionHandle_t = {#type VRActionHandle_t#}
-{#typedef VRActionHandle_t VRActionHandle_t#}
+{#typedef VRActionHandle_t VRActionHandle_t #}
 
 type VRActionSetHandle_t = {#type VRActionSetHandle_t#}
 {#typedef VRActionSetHandle_t VRActionSetHandle_t#}
@@ -86,11 +83,11 @@ type VRInputOriginHandle_t = {#type VRInputOriginHandle_t#}
 {#pointer glSharedTextureHandle_t as GlSharedTextureHandle_t newtype#}
 deriving instance Eq GlSharedTextureHandle_t
 
-type GlInt_t = {#type GlInt_t#}
-{#typedef GlInt_t GlInt_t#}
+type GlInt_t = {#type glInt_t#}
+{#typedef glInt_t GlInt_t#}
 
-type GlUInt_t = {#type GlUInt_t#}
-{#typedef GlUInt_t GlUInt_t#}
+type GlUInt_t = {#type glUInt_t#}
+{#typedef glUInt_t GlUInt_t#}
 
 type SharedTextureHandle_t = {#type SharedTextureHandle_t#}
 {#typedef SharedTextureHandle_t SharedTextureHandle_t#}
@@ -100,12 +97,6 @@ type DriverId_t = {#type DriverId_t#}
 
 type TrackedDeviceIndex_t = {#type TrackedDeviceIndex_t#}
 {#typedef TrackedDeviceIndex_t TrackedDeviceIndex_t#}
-
-type PropertyContainerHandle_t = {#type PropertyContainerHandle_t#}
-{#typedef PropertyContainerHandle_t PropertyContainerHandle_t#}
-
-type PropertyTypeTag_t = {#type PropertyTypeTag_t#}
-{#typedef PropertyTypeTag_t PropertyTypeTag_t#}
 
 type VROverlayHandle_t = {#type VROverlayHandle_t#}
 {#typedef VROverlayHandle_t VROverlayHandle_t#}
@@ -445,32 +436,32 @@ deriving instance Storable VR_IVRDriverManager_FnTable
 -- global entry point functions
 -- but first: two functions below make use of the `intptr_t` C type
 type IntPtr_t = {#type intptr_t#} -- defines Haskell type synonym IntPtr_t
-{#typedef IntPtr_t intptr_t#}     -- tells c2hs to associate C type intptr_t with HS type IntPtr_t
+{#typedef intptr_t IntPtr_t #}     -- tells c2hs to associate C type intptr_t with HS type IntPtr_t
 
 -- S_API intptr_t VR_InitInternal( EVRInitError *peError, EVRApplicationType eType );
-foreign import capi "openvr/headers/openvr_capi.h VR_InitInternal" 
-    vrInitInternal :: Ptr ({#type EVRInitError}) -> EVRApplicationType -> IO {#type intptr_t#}
+foreign import capi "openvr_capi.h VR_InitInternal" 
+    vrInitInternal :: Ptr ({#type EVRInitError#}) -> {#type EVRApplicationType#} -> IO {#type intptr_t#}
 
 -- S_API void VR_ShutdownInternal();
-foreign import capi "openvr/headers/openvr_capi.h VR_ShutdownInternal" 
+foreign import capi "openvr_capi.h VR_ShutdownInternal" 
     vrShutdownInternal :: IO ()
 
 -- S_API bool VR_IsHmdPresent();
-foreign import capi "openvr/headers/openvr_capi.h VR_IsHmdPresent" 
+foreign import capi "openvr_capi.h VR_IsHmdPresent" 
     vrIsHmdPresent :: IO Bool
 
 -- S_API intptr_t VR_GetGenericInterface( const char *pchInterfaceVersion, EVRInitError *peError );
-foreign import capi "openvr/headers/openvr_capi.h VR_GetGenericInterface" 
-    vrGetGenericInterface :: Ptr CChar -> Ptr ({#type EVRInitError}) -> IO {#type intptr_t#}
+foreign import capi "openvr_capi.h VR_GetGenericInterface" 
+    vrGetGenericInterface :: Ptr CChar -> Ptr ({#type EVRInitError#}) -> IO {#type intptr_t#}
 
 -- S_API bool VR_IsRuntimeInstalled();
-foreign import capi "openvr/headers/openvr_capi.h VR_IsRuntimeInstalled" 
+foreign import capi "openvr_capi.h VR_IsRuntimeInstalled" 
     vrIsRuntimeInstalled :: IO Bool
 
 -- S_API const char * VR_GetVRInitErrorAsSymbol( EVRInitError error );
-foreign import capi "openvr/headers/openvr_capi.h VR_GetVRInitErrorAsSymbol"
-    vrGetVRInitErrorAsSymbol :: EVRInitError -> Ptr CChar
+foreign import capi "openvr_capi.h VR_GetVRInitErrorAsSymbol"
+    vrGetVRInitErrorAsSymbol :: {#type EVRInitError #} -> Ptr CChar
 
 -- S_API const char * VR_GetVRInitErrorAsEnglishDescription( EVRInitError error );
-foreign import capi "openvr/headers/openvr_capi.h VR_GetVRInitErrorAsEnglishDescription"
-    vrGetVRInitErrorAsEnglishDescription :: EVRInitError -> Ptr CChar
+foreign import capi "openvr_capi.h VR_GetVRInitErrorAsEnglishDescription"
+   vrGetVRInitErrorAsEnglishDescription :: {#type EVRInitError #} -> Ptr CChar
