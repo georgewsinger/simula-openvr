@@ -1,0 +1,42 @@
+name: simula-openvr
+version: 0.0.0
+synopsis: Haskell bindings for OpenVR.
+author:
+    - George Singer
+    - Zac Slade
+
+default-extensions:
+  - GADTs
+  - ConstraintKinds
+  - KindSignatures
+  - StandaloneDeriving
+  - FlexibleInstances
+  - FlexibleContexts
+  - MultiParamTypeClasses
+  - FunctionalDependencies
+  - ScopedTypeVariables
+  - RankNTypes
+  - RecursiveDo
+  - DefaultSignatures
+  - PatternSynonyms
+  - LambdaCase
+  - ForeignFunctionInterface
+  - QuasiQuotes
+  - TemplateHaskell
+  - OverloadedStrings
+  - TypeInType
+  - TypeFamilies
+  - AllowAmbiguousTypes
+  - RecordWildCards
+
+dependencies:
+  - base >= 4.9 && < 5
+  - containers
+  - linear
+  - unix
+
+build-tools:
+  - c2hs
+
+library:
+  source-dirs: src
