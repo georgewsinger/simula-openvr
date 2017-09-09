@@ -38,6 +38,9 @@ dependencies:
 build-tools:
   - c2hs
 
+extra-libraries:
+  - openvr_api
+
 library:
   source-dirs: [src]
   exposed-modules: [OpenVR]
