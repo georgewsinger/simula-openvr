@@ -39,4 +39,5 @@ build-tools:
   - c2hs
 
 library:
-  source-dirs: src
+  source-dirs: [src]
+  exposed-modules: [OpenVR]

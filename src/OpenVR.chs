@@ -1,7 +1,7 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE CApiFFI #-}
-module Simula.OpenVR where
+module OpenVR where
 
 import GHC.Generics (Generic)
 import System.IO
@@ -71,14 +71,14 @@ type PropertyContainerHandle_t = {#type PropertyContainerHandle_t#}
 type PropertyTypeTag_t = {#type PropertyTypeTag_t#}
 {#typedef PropertyTypeTag_t PropertyTypeTag_t#}
 
-type VRActionHandle_t = {#type VRActionHandle_t#}
-{#typedef VRActionHandle_t VRActionHandle_t #}
+--type VRActionHandle_t = {#type VRActionHandle_t#}
+--{#typedef VRActionHandle_t VRActionHandle_t #}
 
-type VRActionSetHandle_t = {#type VRActionSetHandle_t#}
-{#typedef VRActionSetHandle_t VRActionSetHandle_t#}
+--type VRActionSetHandle_t = {#type VRActionSetHandle_t#}
+--{#typedef VRActionSetHandle_t VRActionSetHandle_t#}
 
-type VRInputOriginHandle_t = {#type VRInputOriginHandle_t#}
-{#typedef VRInputOriginHandle_t VRInputOriginHandle_t#}
+--type VRInputOriginHandle_t = {#type VRInputOriginHandle_t#}
+--{#typedef VRInputOriginHandle_t VRInputOriginHandle_t#}
 
 {#pointer glSharedTextureHandle_t as GlSharedTextureHandle_t newtype#}
 deriving instance Eq GlSharedTextureHandle_t
@@ -190,9 +190,9 @@ deriving instance Storable TrackedDevicePose_t
 deriving instance Eq VRTextureBounds_t
 deriving instance Storable VRTextureBounds_t
 
-{#pointer *VRTextureWithPose_t as VRTextureWithPose_t newtype#}
-deriving instance Eq VRTextureWithPose_t
-deriving instance Storable VRTextureWithPose_t
+--{#pointer *VRTextureWithPose_t as VRTextureWithPose_t newtype#}
+--deriving instance Eq VRTextureWithPose_t
+--deriving instance Storable VRTextureWithPose_t
 
 {#pointer *VRVulkanTextureData_t as VRVulkanTextureData_t newtype#}
 deriving instance Eq VRVulkanTextureData_t
