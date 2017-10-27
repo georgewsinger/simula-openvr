@@ -41,13 +41,15 @@ build-tools:
 
 extra-libraries:
   - openvr_api
+  - stdc++
 
 include-dirs:
   - openvr/headers
   - cbits
 
+ghc-options: -pgmlg++
 
 library:
   source-dirs: src
-  c-sources: cbits/*.c
+  c-sources: cbits/*.cpp
   exposed-modules: OpenVR

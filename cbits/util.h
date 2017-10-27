@@ -3,21 +3,23 @@
 
 #include <openvr_capi.h>
 
-
-S_API intptr_t VR_InitInternal( EVRInitError *peError, EVRApplicationType eType );
-S_API void VR_ShutdownInternal();
-S_API bool VR_IsHmdPresent();
-S_API intptr_t VR_GetGenericInterface( const char *pchInterfaceVersion, EVRInitError *peError );
-S_API bool VR_IsRuntimeInstalled();
-S_API const char * VR_GetVRInitErrorAsSymbol( EVRInitError error );
-S_API const char * VR_GetVRInitErrorAsEnglishDescription( EVRInitError error );
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 
-struct VR_IVRSystem_FnTable* VR_GetIVRSystem();
+void* VR_Init( EVRInitError *peError, EVRApplicationType eApplicationType, const char *pStartupInfo );
 
-struct VR_IVRCompositor_FnTable* VR_GetIVRCompositor();
+EVRCompositorError VR_IVRCompositor_Submit(EVREye eEye, const Texture_t *pTexture, const VRTextureBounds_t* pBounds, EVRSubmitFlags nSubmitFlags);
 
-HmdMatrix34_t* VR_GetEyeToHeadTransform(struct VR_IVRSystem_FnTable* ivrSystem, EVREye eye);
-HmdMatrix44_t* VR_GetProjectionMatrix(struct VR_IVRSystem_FnTable* ivrSystem, EVREye eye, float near, float far);
+bool VR_IVRSystem_CaptureInputFocus();
+
+// dummy
+void VR_IVRCompositor_WaitGetPoses();
+
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

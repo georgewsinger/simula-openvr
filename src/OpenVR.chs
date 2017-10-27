@@ -24,7 +24,11 @@ import Data.Coerce
 --  here since C2HS is deprecated.
 cFromEnum :: (Enum e, Integral i) => e -> i
 cFromEnum  = fromIntegral . fromEnum
-  
+
+peekEnum :: (Enum a, Integral b, Storable b) => Ptr b -> IO a
+peekEnum  = liftM (toEnum . fromIntegral) . peek
+ 
+ 
 {#enum EVREye {}
  with prefix="EVREye" deriving (Show, Eq)#}
 {#enum ETextureType {}
@@ -493,81 +497,16 @@ deriving instance Storable VR_IVRDriverManager_FnTable
 type IntPtr_t = {#type intptr_t#} -- defines Haskell type synonym IntPtr_t
 {#typedef intptr_t IntPtr_t #}     -- tells c2hs to associate C type intptr_t with HS type IntPtr_t
 
-data OpenVRContext = OpenVRContext {
-  _ivrSystem :: VR_IVRSystem_FnTable,
-  _ivrCompositor :: VR_IVRCompositor_FnTable
-  }
 
-makeLenses ''OpenVRContext
-
-vrInit :: EVRApplicationType -> IO (Either EVRInitError OpenVRContext)
-vrInit appType = do
-  err <- alloca $ \ptrError -> vrInitInternal ptrError (fromIntegral . fromEnum $ appType)
-                               >> (toEnum . fromIntegral) <$> peek ptrError
-  case err of
-    VRInitError_None -> do
-      -- TODO: error handling blah blah
-      ctx <- mkOpenVRContext
-      return (Right ctx)
-      
-    _ -> return (Left err)
-
-  where
-    mkOpenVRContext = OpenVRContext <$> vrGetIVRSystem <*> vrGetIVRCompositor
-    
-
-{#fun VR_GetIVRSystem as vrGetIVRSystem {} -> `VR_IVRSystem_FnTable'#}
-{#fun VR_GetIVRCompositor as vrGetIVRCompositor {} -> `VR_IVRCompositor_FnTable'#}
-
-
--- S_API intptr_t VR_InitInternal( EVRInitError *peError, EVRApplicationType eType );
-foreign import capi "util.h VR_InitInternal" 
-    vrInitInternal :: Ptr ({#type EVRInitError#}) -> {#type EVRApplicationType#} -> IO {#type intptr_t#}
-
--- S_API void VR_ShutdownInternal();
-foreign import capi "util.h VR_ShutdownInternal" 
-    vrShutdownInternal :: IO ()
-
--- S_API bool VR_IsHmdPresent();
-foreign import capi "util.h VR_IsHmdPresent" 
-    vrIsHmdPresent :: IO Bool
-
--- S_API intptr_t VR_GetGenericInterface( const char *pchInterfaceVersion, EVRInitError *peError );
-foreign import capi "util.h VR_GetGenericInterface" 
-    vrGetGenericInterface :: Ptr CChar -> Ptr ({#type EVRInitError#}) -> IO {#type intptr_t#}
-
--- S_API bool VR_IsRuntimeInstalled();
-foreign import capi "util.h VR_IsRuntimeInstalled" 
-    vrIsRuntimeInstalled :: IO Bool
-
--- S_API const char * VR_GetVRInitErrorAsSymbol( EVRInitError error );
-foreign import capi "util.h VR_GetVRInitErrorAsSymbol"
-    vrGetVRInitErrorAsSymbol :: {#type EVRInitError #} -> Ptr CChar
-
--- S_API const char * VR_GetVRInitErrorAsEnglishDescription( EVRInitError error );
-foreign import capi "util.h VR_GetVRInitErrorAsEnglishDescription"
-   vrGetVRInitErrorAsEnglishDescription :: {#type EVRInitError #} -> Ptr CChar
-
+{#fun VR_Init as vrInit {alloca- `EVRInitError' peekEnum* , `EVRApplicationType', `String'} -> `Ptr ()'#}
 
 -- need to turn it back into the underlying Ptr
-{#fun VR_IVRCompositor_FnTable->Submit as ivrCompositorSubmit
-      { coerce `VR_IVRCompositor_FnTable'
-      , `EVREye'
+{#fun VR_IVRCompositor_Submit as ivrCompositorSubmit
+      { `EVREye'
       , `TexturePtr'
       , `VRTextureBounds_t'
       , `EVRSubmitFlags' } -> `EVRCompositorError' #}
 
-{#fun VR_IVRCompositor_FnTable->WaitGetPoses as ivrCompositorWaitGetPoses
-      { coerce `VR_IVRCompositor_FnTable'
-      , `TrackedDevicePosePtr' -- array
-      , `Int'
-      , `TrackedDevicePosePtr'
-      , `Int' } -> `EVRCompositorError' #}
+{#fun VR_IVRSystem_CaptureInputFocus as ivrSystemCaptureInputFocus {} -> `Bool' #}
 
-{#fun VR_GetEyeToHeadTransform as ivrSystemGetEyeToHeadTransform
-      { `VR_IVRSystem_FnTable'
-      , `EVREye' } -> `HmdMatrix34Ptr'#}
-
-{#fun VR_GetProjectionMatrix as ivrSystemGetProjectionMatrix
-      { `VR_IVRSystem_FnTable'
-      , `EVREye', `Float', `Float' } -> `HmdMatrix44Ptr'#}
+{#fun VR_IVRCompositor_WaitGetPoses as ivrCompositorWaitGetPoses {} -> `()' #}
