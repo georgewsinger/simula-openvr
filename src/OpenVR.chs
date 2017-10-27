@@ -25,20 +25,21 @@ import Data.Coerce
 cFromEnum :: (Enum e, Integral i) => e -> i
 cFromEnum  = fromIntegral . fromEnum
   
-{#enum EVREye                                  {underscoreToCase} #}
+{#enum EVREye {}
+ with prefix="EVREye" deriving (Show, Eq)#}
 {#enum ETextureType {}
- with prefix="ETextureType" deriving (Show)#}
+ with prefix="ETextureType" deriving (Show, Eq)#}
 {#enum EColorSpace {}
-  with prefix="EColorSpace" deriving (Show)#}
+  with prefix="EColorSpace" deriving (Show, Eq)#}
 {#enum ETrackingResult {}
-  with prefix="ETrackingResult" deriving (Show)#}
+  with prefix="ETrackingResult" deriving (Show, Eq)#}
 {#enum ETrackedDeviceClass                     {underscoreToCase} #}
 {#enum ETrackedControllerRole                  {underscoreToCase} #}
 {#enum ETrackingUniverseOrigin                 {underscoreToCase} #}
 {#enum ETrackedDeviceProperty                  {underscoreToCase} #}
 {#enum ETrackedPropertyError                   {underscoreToCase} #}
 {#enum EVRSubmitFlags {}
- with prefix="EVRSubmitFlags" deriving (Show)#}
+ with prefix="EVRSubmitFlags" deriving (Show, Eq)#}
 {#enum EVRState                                {underscoreToCase} #}
 {#enum EVREventType                            {underscoreToCase} #}
 {#enum EDeviceActivityLevel                    {underscoreToCase} #}
@@ -50,11 +51,11 @@ cFromEnum  = fromIntegral . fromEnum
 {#enum ECollisionBoundsStyle                   {underscoreToCase} #}
 {#enum EVROverlayError                         {underscoreToCase} #}
 {#enum EVRApplicationType {}
-  with prefix="EVRApplicationType" deriving (Show)#}
+  with prefix="EVRApplicationType" deriving (Show, Eq)#}
 {#enum EVRFirmwareError                        {underscoreToCase} #}
 {#enum EVRNotificationError                    {underscoreToCase} #}
 {#enum EVRInitError {}
-  with prefix="EVRInitError" deriving (Show)#}
+  with prefix="EVRInitError" deriving (Show, Eq)#}
 {#enum EVRScreenshotType                       {underscoreToCase} #}
 {#enum EVRScreenshotPropertyFilenames          {underscoreToCase} #}
 {#enum EVRTrackedCameraError                   {underscoreToCase} #}
@@ -65,7 +66,8 @@ cFromEnum  = fromIntegral . fromEnum
 {#enum ChaperoneCalibrationState               {underscoreToCase} #}
 {#enum EChaperoneConfigFile                    {underscoreToCase} #}
 {#enum EChaperoneImportFlags                   {underscoreToCase} #}
-{#enum EVRCompositorError                      {underscoreToCase} #}
+{#enum EVRCompositorError {}
+ with prefix="EVRCompositorError" deriving (Show, Eq)#}
 {#enum VROverlayInputMethod                    {underscoreToCase} #}
 {#enum VROverlayTransformType                  {underscoreToCase} #}
 {#enum VROverlayFlags                          {underscoreToCase} #}
@@ -190,21 +192,21 @@ deriving instance Storable HmdRect2_t
 deriving instance Eq DistortionCoordinates_t
 deriving instance Storable DistortionCoordinates_t
 
-{#pointer *Texture_t as TexturePtr -> Texture#}
+{#pointer *Texture_t as TexturePtr -> OVRTexture#}
 
-data Texture = Texture {
+data OVRTexture = OVRTexture {
   textureHandle :: Ptr (),
   textureType :: ETextureType,
   textureColorSpace :: EColorSpace
   } deriving Show
 
-instance Storable Texture where
+instance Storable OVRTexture where
   sizeOf _ = {#sizeof Texture_t#}
   alignment _ = {#alignof Texture_t#}
-  peek ptr = Texture <$> {#get Texture_t->handle#} ptr
+  peek ptr = OVRTexture <$> {#get Texture_t->handle#} ptr
                      <*> ((toEnum . fromIntegral) <$> {#get Texture_t->eType#} ptr)
                      <*> ((toEnum . fromIntegral) <$> {#get Texture_t->eColorSpace#} ptr)
-  poke ptr (Texture handle ty csp) = do
+  poke ptr (OVRTexture handle ty csp) = do
     {#set Texture_t->handle#} ptr handle
     {#set Texture_t->eType#} ptr (cFromEnum ty)
     {#set Texture_t->eColorSpace#} ptr (cFromEnum csp)
@@ -492,8 +494,8 @@ type IntPtr_t = {#type intptr_t#} -- defines Haskell type synonym IntPtr_t
 {#typedef intptr_t IntPtr_t #}     -- tells c2hs to associate C type intptr_t with HS type IntPtr_t
 
 data OpenVRContext = OpenVRContext {
-  ivrSystem :: VR_IVRSystem_FnTable,
-  ivrCompositor :: VR_IVRCompositor_FnTable
+  _ivrSystem :: VR_IVRSystem_FnTable,
+  _ivrCompositor :: VR_IVRCompositor_FnTable
   }
 
 makeLenses ''OpenVRContext
