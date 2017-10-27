@@ -3,6 +3,7 @@
 {-# LANGUAGE CApiFFI #-}
 module OpenVR where
 
+
 import GHC.Generics (Generic)
 import System.IO
 import Control.Monad
@@ -12,19 +13,32 @@ import System.Posix.DynamicLinker
 import Foreign
 import Foreign.C
 import Linear
+import Control.Lens
+import Data.Coerce
 
 #include <openvr_capi.h>
+#include <util.h>
 
+
+--  This code is from C2HS, but it has been added
+--  here since C2HS is deprecated.
+cFromEnum :: (Enum e, Integral i) => e -> i
+cFromEnum  = fromIntegral . fromEnum
+  
 {#enum EVREye                                  {underscoreToCase} #}
-{#enum ETextureType                            {underscoreToCase} #}
-{#enum EColorSpace                             {underscoreToCase} #}
-{#enum ETrackingResult                         {underscoreToCase} #}
+{#enum ETextureType {}
+ with prefix="ETextureType" deriving (Show)#}
+{#enum EColorSpace {}
+  with prefix="EColorSpace" deriving (Show)#}
+{#enum ETrackingResult {}
+  with prefix="ETrackingResult" deriving (Show)#}
 {#enum ETrackedDeviceClass                     {underscoreToCase} #}
 {#enum ETrackedControllerRole                  {underscoreToCase} #}
 {#enum ETrackingUniverseOrigin                 {underscoreToCase} #}
 {#enum ETrackedDeviceProperty                  {underscoreToCase} #}
 {#enum ETrackedPropertyError                   {underscoreToCase} #}
-{#enum EVRSubmitFlags                          {underscoreToCase} #}
+{#enum EVRSubmitFlags {}
+ with prefix="EVRSubmitFlags" deriving (Show)#}
 {#enum EVRState                                {underscoreToCase} #}
 {#enum EVREventType                            {underscoreToCase} #}
 {#enum EDeviceActivityLevel                    {underscoreToCase} #}
@@ -35,10 +49,12 @@ import Linear
 {#enum EVRControllerEventOutputType            {underscoreToCase} #}
 {#enum ECollisionBoundsStyle                   {underscoreToCase} #}
 {#enum EVROverlayError                         {underscoreToCase} #}
-{#enum EVRApplicationType                      {underscoreToCase} #}
+{#enum EVRApplicationType {}
+  with prefix="EVRApplicationType" deriving (Show)#}
 {#enum EVRFirmwareError                        {underscoreToCase} #}
 {#enum EVRNotificationError                    {underscoreToCase} #}
-{#enum EVRInitError                            {underscoreToCase} #}
+{#enum EVRInitError {}
+  with prefix="EVRInitError" deriving (Show)#}
 {#enum EVRScreenshotType                       {underscoreToCase} #}
 {#enum EVRScreenshotPropertyFilenames          {underscoreToCase} #}
 {#enum EVRTrackedCameraError                   {underscoreToCase} #}
@@ -134,13 +150,9 @@ type VRCompositorError      = EVRCompositorError
 type VRScreenshotsError     = EVRScreenshotError
 
 -- typedef structs
-{#pointer *HmdMatrix34_t as HmdMatrix34_t newtype#}
-deriving instance Eq HmdMatrix34_t
-deriving instance Storable HmdMatrix34_t
+{#pointer *HmdMatrix34_t as HmdMatrix34Ptr -> M34 Float #}
 
-{#pointer *HmdMatrix44_t as HmdMatrix44_t newtype#}
-deriving instance Eq HmdMatrix44_t
-deriving instance Storable HmdMatrix44_t
+{#pointer *HmdMatrix44_t as HmdMatrix44Ptr -> M44 Float #}
 
 {#pointer *HmdVector3_t as HmdVector3_t newtype#}
 deriving instance Eq HmdVector3_t
@@ -178,13 +190,54 @@ deriving instance Storable HmdRect2_t
 deriving instance Eq DistortionCoordinates_t
 deriving instance Storable DistortionCoordinates_t
 
-{#pointer *Texture_t as Texture_t newtype#}
-deriving instance Eq Texture_t
-deriving instance Storable Texture_t
+{#pointer *Texture_t as TexturePtr -> Texture#}
 
-{#pointer *TrackedDevicePose_t as TrackedDevicePose_t newtype#}
-deriving instance Eq TrackedDevicePose_t
-deriving instance Storable TrackedDevicePose_t
+data Texture = Texture {
+  textureHandle :: Ptr (),
+  textureType :: ETextureType,
+  textureColorSpace :: EColorSpace
+  } deriving Show
+
+instance Storable Texture where
+  sizeOf _ = {#sizeof Texture_t#}
+  alignment _ = {#alignof Texture_t#}
+  peek ptr = Texture <$> {#get Texture_t->handle#} ptr
+                     <*> ((toEnum . fromIntegral) <$> {#get Texture_t->eType#} ptr)
+                     <*> ((toEnum . fromIntegral) <$> {#get Texture_t->eColorSpace#} ptr)
+  poke ptr (Texture handle ty csp) = do
+    {#set Texture_t->handle#} ptr handle
+    {#set Texture_t->eType#} ptr (cFromEnum ty)
+    {#set Texture_t->eColorSpace#} ptr (cFromEnum csp)
+
+
+{#pointer *TrackedDevicePose_t as TrackedDevicePosePtr -> TrackedDevicePose#}
+
+data TrackedDevicePose = TrackedDevicePose {
+  poseDeviceToAbsoluteTracking :: M34 Float,
+  poseVelocity :: V3 Float,
+  poseAngularVelocity :: V3 Float,
+  poseTrackingResult :: ETrackingResult,
+  poseIsValid :: Bool,
+  poseDeviceIsConnected :: Bool
+  } deriving Show
+
+instance Storable TrackedDevicePose where
+  sizeOf _ = {#sizeof TrackedDevicePose_t#}
+  alignment _ = {#alignof TrackedDevicePose_t#}
+  peek ptr = TrackedDevicePose <$> peekByteOff ptr {#offsetof TrackedDevicePose_t->mDeviceToAbsoluteTracking #}
+                               <*> peekByteOff ptr {#offsetof TrackedDevicePose_t->vVelocity #}
+                               <*> peekByteOff ptr {#offsetof TrackedDevicePose_t->vAngularVelocity #}
+                               <*> ((toEnum . fromIntegral) <$> {#get TrackedDevicePose_t->eTrackingResult #} ptr)
+                               <*> {#get TrackedDevicePose_t->bPoseIsValid #} ptr
+                               <*> {#get TrackedDevicePose_t->bDeviceIsConnected #} ptr
+  poke ptr (TrackedDevicePose tf v av res valid conn) = do
+    pokeByteOff ptr {#offsetof TrackedDevicePose_t->mDeviceToAbsoluteTracking #} tf 
+    pokeByteOff ptr {#offsetof TrackedDevicePose_t->vVelocity #} v
+    pokeByteOff ptr {#offsetof TrackedDevicePose_t->vAngularVelocity #} av
+    {#set TrackedDevicePose_t->eTrackingResult #} ptr (cFromEnum res)
+    {#set TrackedDevicePose_t->bPoseIsValid #} ptr valid
+    {#set TrackedDevicePose_t->bDeviceIsConnected #} ptr conn
+
 
 {#pointer *VRTextureBounds_t as VRTextureBounds_t newtype#}
 deriving instance Eq VRTextureBounds_t
@@ -438,30 +491,81 @@ deriving instance Storable VR_IVRDriverManager_FnTable
 type IntPtr_t = {#type intptr_t#} -- defines Haskell type synonym IntPtr_t
 {#typedef intptr_t IntPtr_t #}     -- tells c2hs to associate C type intptr_t with HS type IntPtr_t
 
+data OpenVRContext = OpenVRContext {
+  ivrSystem :: VR_IVRSystem_FnTable,
+  ivrCompositor :: VR_IVRCompositor_FnTable
+  }
+
+makeLenses ''OpenVRContext
+
+vrInit :: EVRApplicationType -> IO (Either EVRInitError OpenVRContext)
+vrInit appType = do
+  err <- alloca $ \ptrError -> vrInitInternal ptrError (fromIntegral . fromEnum $ appType)
+                               >> (toEnum . fromIntegral) <$> peek ptrError
+  case err of
+    VRInitError_None -> do
+      -- TODO: error handling blah blah
+      ctx <- mkOpenVRContext
+      return (Right ctx)
+      
+    _ -> return (Left err)
+
+  where
+    mkOpenVRContext = OpenVRContext <$> vrGetIVRSystem <*> vrGetIVRCompositor
+    
+
+{#fun VR_GetIVRSystem as vrGetIVRSystem {} -> `VR_IVRSystem_FnTable'#}
+{#fun VR_GetIVRCompositor as vrGetIVRCompositor {} -> `VR_IVRCompositor_FnTable'#}
+
+
 -- S_API intptr_t VR_InitInternal( EVRInitError *peError, EVRApplicationType eType );
-foreign import capi "openvr_capi.h VR_InitInternal" 
+foreign import capi "util.h VR_InitInternal" 
     vrInitInternal :: Ptr ({#type EVRInitError#}) -> {#type EVRApplicationType#} -> IO {#type intptr_t#}
 
 -- S_API void VR_ShutdownInternal();
-foreign import capi "openvr_capi.h VR_ShutdownInternal" 
+foreign import capi "util.h VR_ShutdownInternal" 
     vrShutdownInternal :: IO ()
 
 -- S_API bool VR_IsHmdPresent();
-foreign import capi "openvr_capi.h VR_IsHmdPresent" 
+foreign import capi "util.h VR_IsHmdPresent" 
     vrIsHmdPresent :: IO Bool
 
 -- S_API intptr_t VR_GetGenericInterface( const char *pchInterfaceVersion, EVRInitError *peError );
-foreign import capi "openvr_capi.h VR_GetGenericInterface" 
+foreign import capi "util.h VR_GetGenericInterface" 
     vrGetGenericInterface :: Ptr CChar -> Ptr ({#type EVRInitError#}) -> IO {#type intptr_t#}
 
 -- S_API bool VR_IsRuntimeInstalled();
-foreign import capi "openvr_capi.h VR_IsRuntimeInstalled" 
+foreign import capi "util.h VR_IsRuntimeInstalled" 
     vrIsRuntimeInstalled :: IO Bool
 
 -- S_API const char * VR_GetVRInitErrorAsSymbol( EVRInitError error );
-foreign import capi "openvr_capi.h VR_GetVRInitErrorAsSymbol"
+foreign import capi "util.h VR_GetVRInitErrorAsSymbol"
     vrGetVRInitErrorAsSymbol :: {#type EVRInitError #} -> Ptr CChar
 
 -- S_API const char * VR_GetVRInitErrorAsEnglishDescription( EVRInitError error );
-foreign import capi "openvr_capi.h VR_GetVRInitErrorAsEnglishDescription"
+foreign import capi "util.h VR_GetVRInitErrorAsEnglishDescription"
    vrGetVRInitErrorAsEnglishDescription :: {#type EVRInitError #} -> Ptr CChar
+
+
+-- need to turn it back into the underlying Ptr
+{#fun VR_IVRCompositor_FnTable->Submit as ivrCompositorSubmit
+      { coerce `VR_IVRCompositor_FnTable'
+      , `EVREye'
+      , `TexturePtr'
+      , `VRTextureBounds_t'
+      , `EVRSubmitFlags' } -> `EVRCompositorError' #}
+
+{#fun VR_IVRCompositor_FnTable->WaitGetPoses as ivrCompositorWaitGetPoses
+      { coerce `VR_IVRCompositor_FnTable'
+      , `TrackedDevicePosePtr' -- array
+      , `Int'
+      , `TrackedDevicePosePtr'
+      , `Int' } -> `EVRCompositorError' #}
+
+{#fun VR_GetEyeToHeadTransform as ivrSystemGetEyeToHeadTransform
+      { `VR_IVRSystem_FnTable'
+      , `EVREye' } -> `HmdMatrix34Ptr'#}
+
+{#fun VR_GetProjectionMatrix as ivrSystemGetProjectionMatrix
+      { `VR_IVRSystem_FnTable'
+      , `EVREye', `Float', `Float' } -> `HmdMatrix44Ptr'#}
