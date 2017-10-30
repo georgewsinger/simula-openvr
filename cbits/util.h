@@ -17,6 +17,10 @@ bool VR_IVRSystem_CaptureInputFocus();
 // dummy
 void VR_IVRCompositor_WaitGetPoses();
 
+void VR_IVRSystem_GetOutputDevice(uint64_t* pnDevice, ETextureType textureType, struct VkInstance_T* pInstance);
+uint32_t VR_IVRCompositor_GetVulkanInstanceExtensionsRequired(char* pchValue, uint32_t bufferSize);
+uint32_t VR_IVRCompositor_GetVulkanDeviceExtensionsRequired(struct VkPhysicalDevice_T* pPhysicalDevice, char* pchValue, uint32_t bufferSize);
+
 
 #ifdef __cplusplus
 }

@@ -253,9 +253,37 @@ deriving instance Storable VRTextureBounds_t
 --deriving instance Eq VRTextureWithPose_t
 --deriving instance Storable VRTextureWithPose_t
 
-{#pointer *VRVulkanTextureData_t as VRVulkanTextureData_t newtype#}
-deriving instance Eq VRVulkanTextureData_t
-deriving instance Storable VRVulkanTextureData_t
+data VRVulkanTextureData = VRVulkanTextureData Word64 (Ptr ()) (Ptr ()) (Ptr ()) (Ptr ()) Word32 Word32 Word32 Word32 Word32
+
+{#pointer *VRVulkanTextureData_t as VRVulkanTextureData_t -> VRVulkanTextureData#}
+
+instance Storable VRVulkanTextureData where
+  sizeOf _ = {#sizeof VRVulkanTextureData_t#}
+  alignment _ = {#alignof VRVulkanTextureData_t#}
+  peek ptr = VRVulkanTextureData <$> (fromIntegral <$> {#get VRVulkanTextureData_t->m_nImage #} ptr)
+                                 <*> {#get VRVulkanTextureData_t->m_pDevice #} ptr
+                                 <*> {#get VRVulkanTextureData_t->m_pPhysicalDevice #} ptr
+                                 <*> {#get VRVulkanTextureData_t->m_pInstance #} ptr
+                                 <*> {#get VRVulkanTextureData_t->m_pQueue #} ptr
+                                 <*> (fromIntegral <$> {#get VRVulkanTextureData_t->m_nQueueFamilyIndex #} ptr)
+                                 <*> (fromIntegral <$> {#get VRVulkanTextureData_t->m_nWidth #} ptr)
+                                 <*> (fromIntegral <$> {#get VRVulkanTextureData_t->m_nHeight #} ptr)
+                                 <*> (fromIntegral <$> {#get VRVulkanTextureData_t->m_nFormat #} ptr)
+                                 <*> (fromIntegral <$> {#get VRVulkanTextureData_t->m_nSampleCount #} ptr)
+  poke ptr (VRVulkanTextureData image dev phys inst queue idx w h fmt smp) = do
+    {#set VRVulkanTextureData_t->m_nImage #} ptr (fromIntegral image)
+    {#set VRVulkanTextureData_t->m_pDevice #} ptr dev
+    {#set VRVulkanTextureData_t->m_pPhysicalDevice #} ptr phys
+    {#set VRVulkanTextureData_t->m_pInstance #} ptr inst
+    {#set VRVulkanTextureData_t->m_pQueue #} ptr queue
+    {#set VRVulkanTextureData_t->m_nQueueFamilyIndex #} ptr (fromIntegral idx)
+    {#set VRVulkanTextureData_t->m_nWidth #} ptr (fromIntegral w)
+    {#set VRVulkanTextureData_t->m_nHeight #} ptr (fromIntegral h)
+    {#set VRVulkanTextureData_t->m_nFormat #} ptr (fromIntegral fmt)
+    {#set VRVulkanTextureData_t->m_nSampleCount #} ptr (fromIntegral smp)
+
+
+
 
 {#pointer *D3D12TextureData_t as D3D12TextureData_t newtype#}
 deriving instance Eq D3D12TextureData_t
@@ -497,7 +525,6 @@ deriving instance Storable VR_IVRDriverManager_FnTable
 type IntPtr_t = {#type intptr_t#} -- defines Haskell type synonym IntPtr_t
 {#typedef intptr_t IntPtr_t #}     -- tells c2hs to associate C type intptr_t with HS type IntPtr_t
 
-
 {#fun VR_Init as vrInit {alloca- `EVRInitError' peekEnum* , `EVRApplicationType', `String'} -> `Ptr ()'#}
 
 -- need to turn it back into the underlying Ptr
@@ -510,3 +537,24 @@ type IntPtr_t = {#type intptr_t#} -- defines Haskell type synonym IntPtr_t
 {#fun VR_IVRSystem_CaptureInputFocus as ivrSystemCaptureInputFocus {} -> `Bool' #}
 
 {#fun VR_IVRCompositor_WaitGetPoses as ivrCompositorWaitGetPoses {} -> `()' #}
+
+{#fun VR_IVRSystem_GetOutputDevice as ivrSystemGetOutputDevice {alloca- `CULong' peek*, `ETextureType', id `Ptr ()'} -> `()'#}
+{#fun VR_IVRCompositor_GetVulkanInstanceExtensionsRequired as ivrCompositorGetVulkanInstanceExtensionsRequired' {id `Ptr CChar', `Int'} -> `Int'#}
+
+ivrCompositorGetVulkanInstanceExtensionsRequired :: IO [String]
+ivrCompositorGetVulkanInstanceExtensionsRequired = do
+  len <- ivrCompositorGetVulkanInstanceExtensionsRequired' nullPtr 0
+  str <- allocaArray len $ \ptr -> ivrCompositorGetVulkanInstanceExtensionsRequired' ptr len >> peekCStringLen (ptr, len)
+  return (words str)
+
+{#fun VR_IVRCompositor_GetVulkanDeviceExtensionsRequired as ivrCompositorGetVulkanDeviceExtensionsRequired' {id `Ptr ()', id `Ptr CChar', `Int'} -> `Int'#}
+
+ivrCompositorGetVulkanDeviceExtensionsRequired :: Ptr () -> IO [String]
+ivrCompositorGetVulkanDeviceExtensionsRequired dev = do
+  len <- ivrCompositorGetVulkanDeviceExtensionsRequired' dev nullPtr 0
+  str <- allocaArray len $ \ptr -> ivrCompositorGetVulkanDeviceExtensionsRequired' dev ptr len >> peekCStringLen (ptr, len)
+  return (words str)
+
+
+
+  

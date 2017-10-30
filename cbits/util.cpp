@@ -21,4 +21,16 @@ bool VR_IVRSystem_CaptureInputFocus() {
 void VR_IVRCompositor_WaitGetPoses() {
   vr::VRCompositor()->WaitGetPoses(nullptr, 0, nullptr, 0);
 }
+
+void VR_IVRSystem_GetOutputDevice(uint64_t* pnDevice, ETextureType textureType, VkInstance_T* pInstance) {
+  vr::VRSystem()->GetOutputDevice(pnDevice, (vr::ETextureType) textureType, pInstance);
+}
+uint32_t VR_IVRCompositor_GetVulkanInstanceExtensionsRequired(char* pchValue, uint32_t bufferSize) {
+  vr::VRCompositor()->GetVulkanInstanceExtensionsRequired(pchValue, bufferSize);
+}
+uint32_t VR_IVRCompositor_GetVulkanDeviceExtensionsRequired(VkPhysicalDevice_T* pPhysicalDevice, char* pchValue, uint32_t bufferSize) {
+  vr::VRCompositor()->GetVulkanDeviceExtensionsRequired(pPhysicalDevice, pchValue, bufferSize);
+}
+
+
 }
