@@ -32,5 +32,9 @@ uint32_t VR_IVRCompositor_GetVulkanDeviceExtensionsRequired(VkPhysicalDevice_T* 
   vr::VRCompositor()->GetVulkanDeviceExtensionsRequired(pPhysicalDevice, pchValue, bufferSize);
 }
 
+void VR_IVRSystem_GetRecommendedRenderTargetSize(uint32_t* width, uint32_t* height) {
+  vr::VRSystem()->GetRecommendedRenderTargetSize(width,height);
+}
+
 
 }

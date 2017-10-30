@@ -245,9 +245,21 @@ instance Storable TrackedDevicePose where
     {#set TrackedDevicePose_t->bDeviceIsConnected #} ptr conn
 
 
-{#pointer *VRTextureBounds_t as VRTextureBounds_t newtype#}
-deriving instance Eq VRTextureBounds_t
-deriving instance Storable VRTextureBounds_t
+data VRTextureBounds = VRTextureBounds CFloat CFloat CFloat CFloat
+{#pointer *VRTextureBounds_t as VRTextureBounds_t -> VRTextureBounds#}
+
+instance Storable VRTextureBounds where
+  sizeOf _ = {#sizeof VRTextureBounds_t#}
+  alignment _ = {#alignof VRTextureBounds_t#}
+  peek ptr = VRTextureBounds <$> {#get VRTextureBounds_t->uMin#} ptr
+                               <*> {#get VRTextureBounds_t->vMin#} ptr
+                               <*> {#get VRTextureBounds_t->uMax#} ptr
+                               <*> {#get VRTextureBounds_t->vMax#} ptr
+  poke ptr (VRTextureBounds uMin vMin uMax vMax) = do
+    {#set VRTextureBounds_t->uMin#} ptr uMin
+    {#set VRTextureBounds_t->vMin#} ptr vMin
+    {#set VRTextureBounds_t->uMax#} ptr uMax
+    {#set VRTextureBounds_t->vMax#} ptr vMax
 
 --{#pointer *VRTextureWithPose_t as VRTextureWithPose_t newtype#}
 --deriving instance Eq VRTextureWithPose_t
@@ -557,4 +569,4 @@ ivrCompositorGetVulkanDeviceExtensionsRequired dev = do
 
 
 
-  
+{#fun VR_IVRSystem_GetRecommendedRenderTargetSize as ivrSystemGetRecommendedRenderTargetSize { alloca- `CUInt' peek*, alloca- `CUInt' peek* } -> `()'#}
