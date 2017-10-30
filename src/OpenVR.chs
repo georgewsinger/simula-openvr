@@ -544,7 +544,7 @@ type IntPtr_t = {#type intptr_t#} -- defines Haskell type synonym IntPtr_t
 ivrCompositorGetVulkanInstanceExtensionsRequired :: IO [String]
 ivrCompositorGetVulkanInstanceExtensionsRequired = do
   len <- ivrCompositorGetVulkanInstanceExtensionsRequired' nullPtr 0
-  str <- allocaArray len $ \ptr -> ivrCompositorGetVulkanInstanceExtensionsRequired' ptr len >> peekCStringLen (ptr, len)
+  str <- allocaArray len $ \ptr -> ivrCompositorGetVulkanInstanceExtensionsRequired' ptr len >> peekCString ptr
   return (words str)
 
 {#fun VR_IVRCompositor_GetVulkanDeviceExtensionsRequired as ivrCompositorGetVulkanDeviceExtensionsRequired' {id `Ptr ()', id `Ptr CChar', `Int'} -> `Int'#}
@@ -552,7 +552,7 @@ ivrCompositorGetVulkanInstanceExtensionsRequired = do
 ivrCompositorGetVulkanDeviceExtensionsRequired :: Ptr () -> IO [String]
 ivrCompositorGetVulkanDeviceExtensionsRequired dev = do
   len <- ivrCompositorGetVulkanDeviceExtensionsRequired' dev nullPtr 0
-  str <- allocaArray len $ \ptr -> ivrCompositorGetVulkanDeviceExtensionsRequired' dev ptr len >> peekCStringLen (ptr, len)
+  str <- allocaArray len $ \ptr -> ivrCompositorGetVulkanDeviceExtensionsRequired' dev ptr len >> peekCString ptr
   return (words str)
 
 
