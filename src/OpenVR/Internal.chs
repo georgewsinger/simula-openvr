@@ -1,22 +1,22 @@
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE CApiFFI #-}
-module OpenVR where
+module OpenVR.Internal where
 
 
 import GHC.Generics (Generic)
 import System.IO
 import Control.Monad
+import Data.Kind
 import Data.Proxy
 import Data.Word
+import Data.Type.Equality
 import System.Posix.DynamicLinker
 import Foreign
+import Foreign.Ptr
 import Foreign.C
 import Linear
 import Control.Lens
 import Data.Coerce
 
-#include <openvr_capi.h>
+#include <openvr_capi_fixed.h>
 #include <util.h>
 
 
@@ -534,39 +534,56 @@ deriving instance Storable VR_IVRDriverManager_FnTable
 
 -- global entry point functions
 -- but first: two functions below make use of the `intptr_t` C type
-type IntPtr_t = {#type intptr_t#} -- defines Haskell type synonym IntPtr_t
-{#typedef intptr_t IntPtr_t #}     -- tells c2hs to associate C type intptr_t with HS type IntPtr_t
+{#typedef intptr_t IntPtr #}     -- tells c2hs to associate C type intptr_t with HS type IntPtr_t
 
-{#fun VR_Init as vrInit {alloca- `EVRInitError' peekEnum* , `EVRApplicationType', `String'} -> `Ptr ()'#}
+{#fun VR_InitInternal as vrInit {alloca- `EVRInitError' peekEnum* , `EVRApplicationType'} -> `IntPtr'#}
+{#fun VR_ShutdownInternal as vrShutdown {} -> `()'#}
+{#fun VR_IsHmdPresent as vrIsHmdPresent {} -> `Bool'#}
+{#fun VR_GetGenericInterface as vrGetGenericInterface {`String', alloca- `EVRInitError' peekEnum*} -> `IntPtr'#}
 
--- need to turn it back into the underlying Ptr
-{#fun VR_IVRCompositor_Submit as ivrCompositorSubmit
-      { `EVREye'
+-- type-safe context stuff
+
+{#fun VR_IVRCompositor_FnTable->Submit as ivrCompositorSubmit_
+      { coerce `VR_IVRCompositor_FnTable'
+      , castPtr `Ptr VR_IVRCompositor_FnTable'
+      , `EVREye'
       , `TexturePtr'
       , `VRTextureBounds_t'
       , `EVRSubmitFlags' } -> `EVRCompositorError' #}
 
-{#fun VR_IVRSystem_CaptureInputFocus as ivrSystemCaptureInputFocus {} -> `Bool' #}
 
-{#fun VR_IVRCompositor_WaitGetPoses as ivrCompositorWaitGetPoses {} -> `()' #}
+{#fun VR_IVRCompositor_FnTable->WaitGetPoses as ivrCompositorWaitGetPoses_
+      { coerce `VR_IVRCompositor_FnTable'
+      , castPtr `Ptr VR_IVRCompositor_FnTable'
+      , id `TrackedDevicePosePtr'
+      , `Int'
+      , id `TrackedDevicePosePtr'
+      , `Int' } -> `EVRCompositorError' #}
 
-{#fun VR_IVRSystem_GetOutputDevice as ivrSystemGetOutputDevice {alloca- `CULong' peek*, `ETextureType', id `Ptr ()'} -> `()'#}
-{#fun VR_IVRCompositor_GetVulkanInstanceExtensionsRequired as ivrCompositorGetVulkanInstanceExtensionsRequired' {id `Ptr CChar', `Int'} -> `Int'#}
+{#fun VR_IVRCompositor_FnTable->GetVulkanInstanceExtensionsRequired as ivrCompositorGetVulkanInstanceExtensionsRequired_
+      { coerce `VR_IVRCompositor_FnTable'
+      , castPtr `Ptr VR_IVRCompositor_FnTable'
+      , id `Ptr CChar'
+      , `Int'} -> `Int'#}
 
-ivrCompositorGetVulkanInstanceExtensionsRequired :: IO [String]
-ivrCompositorGetVulkanInstanceExtensionsRequired = do
-  len <- ivrCompositorGetVulkanInstanceExtensionsRequired' nullPtr 0
-  str <- allocaArray len $ \ptr -> ivrCompositorGetVulkanInstanceExtensionsRequired' ptr len >> peekCString ptr
-  return (words str)
+{#fun VR_IVRCompositor_FnTable->GetVulkanDeviceExtensionsRequired as ivrCompositorGetVulkanDeviceExtensionsRequired_
+      { coerce `VR_IVRCompositor_FnTable'
+      , castPtr `Ptr VR_IVRCompositor_FnTable'
+      , id `Ptr ()'
+      , id `Ptr CChar'
+      , `Int'} -> `Int'#}
 
-{#fun VR_IVRCompositor_GetVulkanDeviceExtensionsRequired as ivrCompositorGetVulkanDeviceExtensionsRequired' {id `Ptr ()', id `Ptr CChar', `Int'} -> `Int'#}
+{#fun VR_IVRSystem_FnTable->GetOutputDevice as ivrSystemGetOutputDevice_
+      { coerce `VR_IVRSystem_FnTable'
+      , castPtr `Ptr VR_IVRSystem_FnTable'
+      , alloca- `CULong' peek*
+      , `ETextureType'
+      , id `Ptr ()'} -> `()'#}
 
-ivrCompositorGetVulkanDeviceExtensionsRequired :: Ptr () -> IO [String]
-ivrCompositorGetVulkanDeviceExtensionsRequired dev = do
-  len <- ivrCompositorGetVulkanDeviceExtensionsRequired' dev nullPtr 0
-  str <- allocaArray len $ \ptr -> ivrCompositorGetVulkanDeviceExtensionsRequired' dev ptr len >> peekCString ptr
-  return (words str)
+{#fun VR_IVRSystem_FnTable->GetRecommendedRenderTargetSize as ivrSystemGetRecommendedRenderTargetSize_
+      { coerce `VR_IVRSystem_FnTable'
+      , castPtr `Ptr VR_IVRSystem_FnTable'
+      , alloca- `CUInt' peek*
+      , alloca- `CUInt' peek* } -> `()'#}
 
 
-
-{#fun VR_IVRSystem_GetRecommendedRenderTargetSize as ivrSystemGetRecommendedRenderTargetSize { alloca- `CUInt' peek*, alloca- `CUInt' peek* } -> `()'#}

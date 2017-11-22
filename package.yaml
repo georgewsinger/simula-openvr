@@ -28,6 +28,8 @@ default-extensions:
   - TypeFamilies
   - AllowAmbiguousTypes
   - RecordWildCards
+  - GeneralizedNewtypeDeriving
+  - TypeOperators
 
 dependencies:
   - base >= 4.9 && < 5
@@ -35,21 +37,26 @@ dependencies:
   - linear
   - unix
   - lens
+  - aeson
+  - template-haskell
+  - text
+  - bytestring
 
 build-tools:
   - c2hs
 
 extra-libraries:
   - openvr_api
-  - stdc++
 
 include-dirs:
   - openvr/headers
   - cbits
 
-ghc-options: -pgmlg++
 
 library:
   source-dirs: src
-  c-sources: cbits/*.cpp
-  exposed-modules: OpenVR
+  exposed-modules:
+    - OpenVR
+    - OpenVR.Internal
+    - OpenVR.Interface
+    - OpenVR.TH
