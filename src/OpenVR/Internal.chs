@@ -586,4 +586,16 @@ deriving instance Storable VR_IVRDriverManager_FnTable
       , alloca- `CUInt' peek*
       , alloca- `CUInt' peek* } -> `()'#}
 
+{#fun VR_IVRSystem_GetProjectionMatrix as ivrSystemGetProjectionMatrix_
+      { coerce `VR_IVRSystem_FnTable'
+      , castPtr `Ptr VR_IVRSystem_FnTable'
+      , `EVREye'
+      , `Float'
+      , `Float'
+      , alloca- `M44 Float' peek* } -> `()' #}
 
+{#fun VR_IVRSystem_GetEyeToHeadTransform as ivrSystemGetEyeToHeadTransform_
+      { coerce `VR_IVRSystem_FnTable'
+      , castPtr `Ptr VR_IVRSystem_FnTable'
+      , `EVREye'
+      , alloca- `M34 Float' peek* } -> `()' #}

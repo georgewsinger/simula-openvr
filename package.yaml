@@ -55,6 +55,7 @@ include-dirs:
 
 library:
   source-dirs: src
+  c-sources: cbits/*.c
   exposed-modules:
     - OpenVR
     - OpenVR.Internal

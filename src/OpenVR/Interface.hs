@@ -73,7 +73,8 @@ makeVrCall 'ivrCompositorGetVulkanInstanceExtensionsRequired_ "ivrCompositorGetV
 makeVrCall 'ivrCompositorGetVulkanDeviceExtensionsRequired_ "ivrCompositorGetVulkanDeviceExtensionsRequired'"
 makeVrCall 'ivrSystemGetOutputDevice_ "ivrSystemGetOutputDevice"
 makeVrCall 'ivrSystemGetRecommendedRenderTargetSize_ "ivrSystemGetRecommendedRenderTargetSize"
-
+makeVrCall 'ivrSystemGetProjectionMatrix_ "ivrSystemGetProjectionMatrix"
+makeVrCall 'ivrSystemGetEyeToHeadTransform_ "ivrSystemGetEyeToHeadTransform"
 
 -- modified lengthArray0 that respects maximum size
 lengthArray :: (Storable a, Eq a) => Int ->  a -> Ptr a -> IO Int
