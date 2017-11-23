@@ -1274,7 +1274,7 @@ typedef struct VREvent_Status_t
 
 typedef struct VREvent_Keyboard_t
 {
-	char * cNewInput[8]; //char[8]
+	char cNewInput[8]; //char[8]
 	uint64_t uUserValue;
 } VREvent_Keyboard_t;
 

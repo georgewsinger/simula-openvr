@@ -71,10 +71,15 @@ makeVrCall 'ivrCompositorSubmit_ "ivrCompositorSubmit"
 makeVrCall 'ivrCompositorWaitGetPoses_ "ivrCompositorWaitGetPoses'"
 makeVrCall 'ivrCompositorGetVulkanInstanceExtensionsRequired_ "ivrCompositorGetVulkanInstanceExtensionsRequired'"
 makeVrCall 'ivrCompositorGetVulkanDeviceExtensionsRequired_ "ivrCompositorGetVulkanDeviceExtensionsRequired'"
+
 makeVrCall 'ivrSystemGetOutputDevice_ "ivrSystemGetOutputDevice"
 makeVrCall 'ivrSystemGetRecommendedRenderTargetSize_ "ivrSystemGetRecommendedRenderTargetSize"
 makeVrCall 'ivrSystemGetProjectionMatrix_ "ivrSystemGetProjectionMatrix"
 makeVrCall 'ivrSystemGetEyeToHeadTransform_ "ivrSystemGetEyeToHeadTransform"
+makeVrCall 'ivrSystemPollNextEvent_ "ivrSystemPollNextEvent"
+
+makeVrCall 'ivrRenderModelsLoadRenderModel_Async_ "ivrRenderModelsLoadRenderModel_Async"
+makeVrCall 'ivrRenderModelsLoadTexture_Async_ "ivrRenderModelsLoadTexture_Async"
 
 -- modified lengthArray0 that respects maximum size
 lengthArray :: (Storable a, Eq a) => Int ->  a -> Ptr a -> IO Int

@@ -45,9 +45,11 @@ peekEnum  = liftM (toEnum . fromIntegral) . peek
 {#enum EVRSubmitFlags {}
  with prefix="EVRSubmitFlags" deriving (Show, Eq)#}
 {#enum EVRState                                {underscoreToCase} #}
-{#enum EVREventType                            {underscoreToCase} #}
+{#enum EVREventType {}
+ with prefix = "EVREventType" deriving (Show, Eq)#}
 {#enum EDeviceActivityLevel                    {underscoreToCase} #}
-{#enum EVRButtonId                             {underscoreToCase} #}
+{#enum EVRButtonId {}
+ with prefix = "EVRButtonId_k" deriving (Show, Eq)#}
 {#enum EVRMouseButton                          {underscoreToCase} #}
 {#enum EHiddenAreaMeshType                     {underscoreToCase} #}
 {#enum EVRControllerAxisType                   {underscoreToCase} #}
@@ -117,8 +119,8 @@ type SharedTextureHandle_t = {#type SharedTextureHandle_t#}
 type DriverId_t = {#type DriverId_t#}
 {#typedef DriverId_t DriverId_t#}
 
-type TrackedDeviceIndex_t = {#type TrackedDeviceIndex_t#}
-{#typedef TrackedDeviceIndex_t TrackedDeviceIndex_t#}
+type TrackedDeviceIndex = {#type TrackedDeviceIndex_t#}
+{#typedef TrackedDeviceIndex_t TrackedDeviceIndex #}
 
 type VROverlayHandle_t = {#type VROverlayHandle_t#}
 {#typedef VROverlayHandle_t VROverlayHandle_t#}
@@ -132,8 +134,8 @@ type ScreenshotHandle_t = {#type ScreenshotHandle_t#}
 type VRComponentProperties = {#type VRComponentProperties#}
 {#typedef VRComponentProperties VRComponentProperties#}
 
-type TextureID_t = {#type TextureID_t#}
-{#typedef TextureID_t TextureID_t#}
+type TextureID = {#type TextureID_t#}
+{#typedef TextureID_t TextureID #}
 
 type VRNotificationId = {#type VRNotificationId#}
 {#typedef VRNotificationId VRNotificationId#}
@@ -301,10 +303,6 @@ instance Storable VRVulkanTextureData where
 deriving instance Eq D3D12TextureData_t
 deriving instance Storable D3D12TextureData_t
 
-{#pointer *VREvent_Controller_t as VREvent_Controller_t newtype#}
-deriving instance Eq VREvent_Controller_t
-deriving instance Storable VREvent_Controller_t
-
 {#pointer *VREvent_Mouse_t as VREvent_Mouse_t newtype#}
 deriving instance Eq VREvent_Mouse_t
 deriving instance Storable VREvent_Mouse_t
@@ -433,17 +431,47 @@ deriving instance Storable IntersectionMaskCircle_t
 deriving instance Eq RenderModel_ComponentState_t
 deriving instance Storable RenderModel_ComponentState_t
 
-{#pointer *RenderModel_Vertex_t as RenderModel_Vertex_t newtype#}
-deriving instance Eq RenderModel_Vertex_t
-deriving instance Storable RenderModel_Vertex_t
+{#pointer *RenderModel_Vertex_t as RenderModel_VertexPtr #}
 
-{#pointer *RenderModel_TextureMap_t as RenderModel_TextureMap_t newtype#}
-deriving instance Eq RenderModel_TextureMap_t
-deriving instance Storable RenderModel_TextureMap_t
+data RenderModel_TextureMap = RenderModel_TextureMap
+  { textureMapWidth :: Int
+  , textureMapHeight :: Int
+  , textureMapData :: Ptr CUChar
+  } deriving Eq
 
-{#pointer *RenderModel_t as RenderModel_t newtype#}
-deriving instance Eq RenderModel_t
-deriving instance Storable RenderModel_t
+{#pointer *RenderModel_TextureMap_t as RenderModel_TextureMapPtr -> RenderModel_TextureMap #}
+
+-- manual instance due to c2hs not handling #pragma pack
+instance Storable RenderModel_TextureMap where
+  sizeOf _ = 12
+  alignment _ = 4
+  peek ptr = RenderModel_TextureMap
+             <$> (fromIntegral <$> (peekByteOff ptr 0 :: IO CUShort))
+             <*> (fromIntegral <$> (peekByteOff ptr 2 :: IO CUShort))
+             <*> peekByteOff ptr 4
+  poke = error "RenderModel_TextureMap poke unsupported"
+
+
+data RenderModel = RenderModel
+  { modelVertexData :: RenderModel_VertexPtr
+  , modelVertexCount :: Int
+  , modelIndexData :: Ptr CUShort
+  , modelTriangleCount :: Int
+  , modelDiffuseTextureId :: TextureID
+  } deriving Eq
+    
+{#pointer *RenderModel_t as RenderModelPtr -> RenderModel #}
+
+instance Storable RenderModel where
+  sizeOf _ = 28
+  alignment _ = 4
+  peek ptr = RenderModel
+             <$> peekByteOff ptr 0
+             <*> (fromIntegral <$> (peekByteOff ptr 8 :: IO CUInt))
+             <*> peekByteOff ptr 12
+             <*> (fromIntegral <$> (peekByteOff ptr 20 :: IO CUInt))
+             <*> peekByteOff ptr 24
+  poke = error "RenderModel poke unsupported"
 
 {#pointer *RenderModel_ControllerMode_State_t as RenderModel_ControllerMode_State_t newtype#}
 deriving instance Eq RenderModel_ControllerMode_State_t
@@ -458,18 +486,74 @@ deriving instance Eq COpenVRContext
 deriving instance Storable COpenVRContext
 
 -- typedef unions
-{#pointer *VREvent_Data_t as VREvent_Data_t newtype#}
-deriving instance Eq VREvent_Data_t
-deriving instance Storable VREvent_Data_t                            -- needed for unions?
+data VREvent_Data
+  = VREvent_Reserved CULong CULong
+  | VREvent_Controller EVRButtonId
+  {-
+  | VREvent_Mouse VREvent_Mouse_t
+  | VREvent_Scroll VREvent_Scroll_t
+  | VREvent_Process VREvent_Process_t
+  | VREvent_Notification VREvent_Notification_t
+  | VREvent_Overlay VREvent_Overlay_t
+  | VREvent_Status VREvent_Status_t
+  | VREvent_Keyboard VREvent_Keyboard_t
+  | VREvent_Ipd VREvent_Ipd_t
+  | VREvent_Chaperone VREvent_Chaperone_t
+  | VREvent_PerformanceTest VREvent_PerformanceTest_t
+  | VREvent_TouchPadMove VREvent_TouchPadMove_t
+  | VREvent_SeatedZeroPoseReset VREvent_SeatedZeroPoseReset_t
+  | VREvent_Screenshot VREvent_Screenshot_t
+  | VREvent_ScreenshotProgress VREvent_ScreenshotProgress_t
+  | VREvent_ApplicationLaunch VREvent_ApplicationLaunch_t
+  | VREvent_EditingCameraSurface VREvent_EditingCameraSurface_t
+  | VREvent_MessageOverlay VREvent_MessageOverlay_t
+  | VREvent_Property VREvent_Property_t
+-}
+  deriving Eq
+
+{#pointer *VREvent_Data_t as VREvent_DataPtr -> VREvent_Data #}
+
+--TODO remainder
+peekData :: EVREventType -> Ptr VREvent_Data -> IO VREvent_Data
+peekData = go
+  where
+    go VREvent_ButtonPress = peekController
+    go VREvent_ButtonUnpress = peekController
+    go VREvent_ButtonTouch = peekController
+    go VREvent_ButtonUntouch = peekController
+    go _ = peekReserved
+
+    peekController ptr = VREvent_Controller . toEnum . fromIntegral
+                         <$> {#get VREvent_Data_t.controller.button#} ptr
+    peekReserved ptr = VREvent_Reserved
+                       <$> {#get VREvent_Data_t.reserved.reserved0#} ptr
+                       <*> {#get VREvent_Data_t.reserved.reserved1#} ptr
 
 {#pointer *VROverlayIntersectionMaskPrimitive_Data_t as VROverlayIntersectionMaskPrimitive_Data_t newtype#}
 deriving instance Eq VROverlayIntersectionMaskPrimitive_Data_t
 deriving instance Storable VROverlayIntersectionMaskPrimitive_Data_t -- needed for unions?
 
 -- pure structs
-{#pointer *VREvent_t as VREvent_t newtype#}
-deriving instance Eq VREvent_t
-deriving instance Storable VREvent_t
+data VREvent = VREvent
+  { eventType :: EVREventType
+  , eventTrackedDeviceIndex :: TrackedDeviceIndex
+  , eventAgeSeconds :: CFloat
+  , eventData :: VREvent_Data
+  } deriving Eq
+
+{#pointer *VREvent_t as VREventPtr -> VREvent #}
+
+instance Storable VREvent where
+  sizeOf _ = {#sizeof VREvent_t#}
+  alignment _ = {#alignof VREvent_t#}
+  peek ptr = do
+    eventType <- (toEnum . fromIntegral) <$> {#get VREvent_t->eventType#} ptr
+    VREvent eventType
+      <$> {#get VREvent_t->trackedDeviceIndex#} ptr
+      <*> {#get VREvent_t->eventAgeSeconds#} ptr
+      <*> peekData eventType (castPtr $ ptr `plusPtr` {#offsetof VREvent_t->data#})
+  poke = error "VREvent poke not supported"
+
 
 {#pointer *VROverlayIntersectionMaskPrimitive_t as VROverlayIntersectionMaskPrimitive_t newtype#}
 deriving instance Eq VROverlayIntersectionMaskPrimitive_t
@@ -599,3 +683,23 @@ deriving instance Storable VR_IVRDriverManager_FnTable
       , castPtr `Ptr VR_IVRSystem_FnTable'
       , `EVREye'
       , alloca- `M34 Float' peek* } -> `()' #}
+
+-- i'm sure there's a better way to pass sizeof of a struct
+{#fun VR_IVRSystem_FnTable->PollNextEvent as ivrSystemPollNextEvent_
+      { coerce `VR_IVRSystem_FnTable'
+      , castPtr `Ptr VR_IVRSystem_FnTable'
+      , alloca- `VREvent' peek*
+      , '($ (fromIntegral $ sizeOf (undefined :: VREvent)))'- `CUInt' void- } -> `Bool' #}
+
+-- handle freeing gracefully
+{#fun VR_IVRRenderModels_FnTable->LoadRenderModel_Async as ivrRenderModelsLoadRenderModel_Async_
+      { coerce `VR_IVRRenderModels_FnTable'
+      , castPtr `Ptr VR_IVRRenderModels_FnTable'
+      , `String'
+      , alloca- `RenderModel' 'peek >=> peek'* } -> `EVRRenderModelError' #}
+
+{#fun VR_IVRRenderModels_FnTable->LoadTexture_Async as ivrRenderModelsLoadTexture_Async_
+      { coerce `VR_IVRRenderModels_FnTable'
+      , castPtr `Ptr VR_IVRRenderModels_FnTable'
+      , `TextureID'
+      , alloca- `RenderModel_TextureMap' 'peek >=> peek'* } -> `EVRRenderModelError' #}
