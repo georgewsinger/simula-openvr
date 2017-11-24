@@ -78,6 +78,7 @@ makeVrCall 'ivrSystemGetProjectionMatrix_ "ivrSystemGetProjectionMatrix"
 makeVrCall 'ivrSystemGetEyeToHeadTransform_ "ivrSystemGetEyeToHeadTransform"
 makeVrCall 'ivrSystemPollNextEvent_ "ivrSystemPollNextEvent'"
 makeVrCall 'ivrSystemGetStringTrackedDeviceProperty_ "ivrSystemGetStringTrackedDeviceProperty'"
+makeVrCall 'ivrSystemIsTrackedDeviceConnected_ "ivrSystemIsTrackedDeviceConnected"
 
 makeVrCall 'ivrRenderModelsLoadRenderModel_Async_ "ivrRenderModelsLoadRenderModel_Async"
 makeVrCall 'ivrRenderModelsLoadTexture_Async_ "ivrRenderModelsLoadTexture_Async"
