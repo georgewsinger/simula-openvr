@@ -718,7 +718,7 @@ deriving instance Storable VR_IVRDriverManager_FnTable
       , castPtr `Ptr VR_IVRRenderModels_FnTable'
       , `RenderModelPtr' } -> `()' #}
 
-{#fun VR_IVRRenderModels_FnTable->LoadTexture_Async as ivrRenderModelsFreeTexture_
+{#fun VR_IVRRenderModels_FnTable->FreeTexture as ivrRenderModelsFreeTexture_
       { coerce `VR_IVRRenderModels_FnTable'
       , castPtr `Ptr VR_IVRRenderModels_FnTable'
       , `RenderModel_TextureMapPtr' } -> `()' #}
