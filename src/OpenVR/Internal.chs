@@ -555,14 +555,16 @@ data VREvent_Data
 {#pointer *VREvent_Data_t as VREvent_DataPtr -> VREvent_Data #}
 
 --TODO remainder
-peekData :: EVREventType -> Ptr VREvent_Data -> IO VREvent_Data
+peekData :: CUInt -> Ptr VREvent_Data -> IO VREvent_Data
 peekData = go
   where
+{-
     go VREvent_ButtonPress = peekController
     go VREvent_ButtonUnpress = peekController
     go VREvent_ButtonTouch = peekController
     go VREvent_ButtonUntouch = peekController
-    go _ = peekReserved
+-}
+    go evid ptr = peekReserved ptr
 
     peekController ptr = VREvent_Controller . toEnum . fromIntegral
                          <$> {#get VREvent_Data_t.controller.button#} ptr
@@ -576,7 +578,7 @@ deriving instance Storable VROverlayIntersectionMaskPrimitive_Data_t -- needed f
 
 -- pure structs
 data VREvent = VREvent
-  { eventType :: EVREventType
+  { eventType :: CUInt
   , eventTrackedDeviceIndex :: TrackedDeviceIndex
   , eventAgeSeconds :: CFloat
   , eventData :: VREvent_Data
@@ -589,11 +591,11 @@ instance Storable VREvent where
   sizeOf _ = 36
   alignment _ = 4
   peek ptr = do
-    eventType <- (toEnum . fromIntegral) <$> (peekByteOff ptr 0 :: IO CUInt)
-    VREvent eventType
+    evid <- peekByteOff ptr 0
+    VREvent evid
       <$> peekByteOff ptr 4
       <*> peekByteOff ptr 8
-      <*> peekData eventType (castPtr $ ptr `plusPtr` 12)
+      <*> peekData evid (castPtr $ ptr `plusPtr` 12)
   poke = error "VREvent poke not supported"
 
 
