@@ -37,57 +37,90 @@ peekEnum  = liftM (toEnum . fromIntegral) . peek
   with prefix="EColorSpace" deriving (Show, Eq)#}
 {#enum ETrackingResult {}
   with prefix="ETrackingResult" deriving (Show, Eq)#}
-{#enum ETrackedDeviceClass                     {underscoreToCase} #}
-{#enum ETrackedControllerRole                  {underscoreToCase} #}
-{#enum ETrackingUniverseOrigin                 {underscoreToCase} #}
-{#enum ETrackedDeviceProperty                  {underscoreToCase} #}
-{#enum ETrackedPropertyError                   {underscoreToCase} #}
+{#enum ETrackedDeviceClass {}
+  with prefix="ETrackedDeviceClass" deriving (Show, Eq) #}
+{#enum ETrackedControllerRole {}
+  with prefix="ETrackedControllerRole" deriving (Show, Eq) #}
+{#enum ETrackingUniverseOrigin {}
+  with prefix="ETrackingUniverseOrigin" deriving (Show, Eq) #}
+{#enum ETrackedDeviceProperty {}
+  with prefix="ETrackedDeviceProperty" deriving (Show, Eq) #}
+{#enum ETrackedPropertyError {}
+  with prefix="ETrackedPropertyError" deriving (Show, Eq) #}
 {#enum EVRSubmitFlags {}
  with prefix="EVRSubmitFlags" deriving (Show, Eq)#}
-{#enum EVRState                                {underscoreToCase} #}
+{#enum EVRState {}
+  with prefix="EVRState" deriving (Show, Eq) #}
 {#enum EVREventType {}
  with prefix = "EVREventType" deriving (Show, Eq)#}
-{#enum EDeviceActivityLevel                    {underscoreToCase} #}
+{#enum EDeviceActivityLevel {}
+  with prefix="EDeviceActivityLevel_k" deriving (Show, Eq) #}
 {#enum EVRButtonId {}
  with prefix = "EVRButtonId_k" deriving (Show, Eq)#}
-{#enum EVRMouseButton                          {underscoreToCase} #}
-{#enum EHiddenAreaMeshType                     {underscoreToCase} #}
-{#enum EVRControllerAxisType                   {underscoreToCase} #}
-{#enum EVRControllerEventOutputType            {underscoreToCase} #}
-{#enum ECollisionBoundsStyle                   {underscoreToCase} #}
-{#enum EVROverlayError                         {underscoreToCase} #}
+{#enum EVRMouseButton {}
+  with prefix="EVRMouseButton" deriving (Show, Eq) #}
+{#enum EHiddenAreaMeshType {upcaseFirstLetter}
+  with prefix="EHiddenAreaMeshType_k" deriving (Show, Eq) #}
+{#enum EVRControllerAxisType {upcaseFirstLetter}
+  with prefix="EVRControllerAxisType_k" deriving (Show, Eq) #}
+{#enum EVRControllerEventOutputType {}
+  with prefix="EVRControllerEventOutputType" deriving (Show, Eq) #}
+{#enum ECollisionBoundsStyle {}
+  with prefix="ECollisionBoundsStyle" deriving (Show, Eq) #}
+{#enum EVROverlayError {}
+  with prefix="EVROverlayError" deriving (Show, Eq) #}
 {#enum EVRApplicationType {}
   with prefix="EVRApplicationType" deriving (Show, Eq)#}
-{#enum EVRFirmwareError                        {underscoreToCase} #}
-{#enum EVRNotificationError                    {underscoreToCase} #}
+{#enum EVRFirmwareError {}
+  with prefix="EVRFirmwareError" deriving (Show, Eq) #}
+{#enum EVRNotificationError {}
+  with prefix="EVRNotificationError" deriving (Show, Eq) #}
 {#enum EVRInitError {}
   with prefix="EVRInitError" deriving (Show, Eq)#}
-{#enum EVRScreenshotType                       {underscoreToCase} #}
-{#enum EVRScreenshotPropertyFilenames          {underscoreToCase} #}
-{#enum EVRTrackedCameraError                   {underscoreToCase} #}
-{#enum EVRTrackedCameraFrameType               {underscoreToCase} #}
-{#enum EVRApplicationError                     {underscoreToCase} #}
-{#enum EVRApplicationProperty                  {underscoreToCase} #}
-{#enum EVRApplicationTransitionState           {underscoreToCase} #}
-{#enum ChaperoneCalibrationState               {underscoreToCase} #}
-{#enum EChaperoneConfigFile                    {underscoreToCase} #}
-{#enum EChaperoneImportFlags                   {underscoreToCase} #}
+{#enum EVRScreenshotType {}
+  with prefix="EVRScreenshotType" deriving (Show, Eq) #}
+{#enum EVRScreenshotPropertyFilenames {}
+  with prefix="EVRScreenshotPropertyFilenames" deriving (Show, Eq) #}
+{#enum EVRTrackedCameraError {}
+  with prefix="EVRTrackedCameraError" deriving (Show, Eq) #}
+{#enum EVRTrackedCameraFrameType {}
+  with prefix="EVRTrackedCameraFrameType" deriving (Show, Eq) #}
+{#enum EVRApplicationError {}
+  with prefix="EVRApplicationError" deriving (Show, Eq) #}
+{#enum EVRApplicationProperty {}
+  with prefix="EVRApplicationProperty" deriving (Show, Eq) #}
+{#enum EVRApplicationTransitionState {}
+  with prefix="EVRApplicationTransitionState" deriving (Show, Eq) #}
+{#enum ChaperoneCalibrationState {}
+  with prefix="ChaperoneCalibrationState" deriving (Show, Eq) #}
+{#enum EChaperoneConfigFile {}
+  with prefix="EChaperoneConfigFile" deriving (Show, Eq) #}
+{#enum EChaperoneImportFlags {}
+  with prefix="EChaperoneImportFlags" deriving (Show, Eq) #}
 {#enum EVRCompositorError {}
  with prefix="EVRCompositorError" deriving (Show, Eq)#}
-{#enum VROverlayInputMethod                    {underscoreToCase} #}
-{#enum VROverlayTransformType                  {underscoreToCase} #}
-{#enum VROverlayFlags                          {underscoreToCase} #}
-{#enum VRMessageOverlayResponse                {underscoreToCase} #}
-{#enum EGamepadTextInputMode                   {underscoreToCase} #}
-{#enum EGamepadTextInputLineMode               {underscoreToCase} #}
-{#enum EOverlayDirection                       {underscoreToCase} #}
-{#enum EVROverlayIntersectionMaskPrimitiveType {underscoreToCase} #}
-{#enum EVRRenderModelError                     {underscoreToCase} #}
-{#enum EVRComponentProperty                    {underscoreToCase} #}
-{#enum EVRNotificationType                     {underscoreToCase} #}
-{#enum EVRNotificationStyle                    {underscoreToCase} #}
-{#enum EVRSettingsError                        {underscoreToCase} #}
-{#enum EVRScreenshotError                      {underscoreToCase} #}
+{#enum VROverlayInputMethod {} deriving (Show, Eq) #}
+{#enum VROverlayTransformType {} deriving (Show, Eq) #}
+{#enum VROverlayFlags {} deriving (Show, Eq) #}
+{#enum VRMessageOverlayResponse {} deriving (Show, Eq) #}
+{#enum EGamepadTextInputMode {}
+  with prefix="EGamepadTextInputMode_k" deriving (Show, Eq) #}
+{#enum EGamepadTextInputLineMode {}
+  with prefix="EGamepadTextInputLineMode_k" deriving (Show, Eq) #}
+{#enum EOverlayDirection {}
+  with prefix="EOverlayDirection" deriving (Show, Eq) #}
+{#enum EVROverlayIntersectionMaskPrimitiveType {}
+  with prefix="EVROverlayIntersectionMaskPrimitiveType" deriving (Show, Eq) #}
+{#enum EVRRenderModelError {}
+ with prefix="EVRRenderModelError" deriving (Show, Eq)#}
+{#enum EVRComponentProperty {}
+  with prefix="EVRComponentProperty" deriving (Show, Eq) #}
+{#enum EVRNotificationType {} deriving (Show, Eq) #}
+{#enum EVRNotificationStyle {} deriving (Show, Eq) #}
+{#enum EVRSettingsError {}
+  with prefix="EVRSettingsError" deriving (Show, Eq) #}
+{#enum EVRScreenshotError {}
+  with prefix="EVRScreenshotError" deriving (Show, Eq) #}
 
 type PropertyContainerHandle_t = {#type PropertyContainerHandle_t#}
 {#typedef PropertyContainerHandle_t PropertyContainerHandle_t#}
@@ -432,6 +465,14 @@ deriving instance Eq RenderModel_ComponentState_t
 deriving instance Storable RenderModel_ComponentState_t
 
 {#pointer *RenderModel_Vertex_t as RenderModel_VertexPtr #}
+
+sizeOfRenderModelVertex :: Integral a => a
+offsetOfRenderModelVertexPosition,  offsetOfRenderModelVertexNormal
+  , offsetOfRenderModelVertexTextureCoord :: Ptr ()
+sizeOfRenderModelVertex = {#sizeof RenderModel_Vertex_t#}
+offsetOfRenderModelVertexPosition = intPtrToPtr {#offsetof RenderModel_Vertex_t->vPosition#}
+offsetOfRenderModelVertexNormal = intPtrToPtr {#offsetof RenderModel_Vertex_t->vNormal#}
+offsetOfRenderModelVertexTextureCoord = intPtrToPtr {#offsetof RenderModel_Vertex_t->rfTextureCoord#}
 
 data RenderModel_TextureMap = RenderModel_TextureMap
   { textureMapWidth :: Int
