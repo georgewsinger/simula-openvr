@@ -15,6 +15,8 @@ import Foreign.C
 import Linear
 import Control.Lens
 import Data.Coerce
+import Data.Set (Set)
+import qualified Data.Set as S
 
 #include <openvr_capi_fixed.h>
 #include <util.h>
@@ -43,8 +45,10 @@ peekEnum  = liftM (toEnum . fromIntegral) . peek
   with prefix="ETrackedControllerRole" deriving (Show, Eq) #}
 {#enum ETrackingUniverseOrigin {}
   with prefix="ETrackingUniverseOrigin" deriving (Show, Eq) #}
+--TODO: this needs the same treatment as VREventType
 {#enum ETrackedDeviceProperty {}
   with prefix="ETrackedDeviceProperty" deriving (Show, Eq) #}
+
 {#enum ETrackedPropertyError {}
   with prefix="ETrackedPropertyError" deriving (Show, Eq) #}
 {#enum EVRSubmitFlags {}
@@ -52,7 +56,28 @@ peekEnum  = liftM (toEnum . fromIntegral) . peek
 {#enum EVRState {}
   with prefix="EVRState" deriving (Show, Eq) #}
 {#enum EVREventType {}
- with prefix = "EVREventType" deriving (Show, Eq)#}
+ with prefix = "EVREventType" deriving (Show, Eq, Bounded)#}
+
+allVREventTypes :: Set CUInt
+allVREventTypes = S.fromList $ map (fromIntegral . fromEnum) ([minBound .. maxBound] :: [EVREventType])
+
+data VREventType
+  = KnownEvent EVREventType
+  | UnknownEvent CUInt 
+  deriving (Show, Eq)
+
+instance Storable VREventType where
+  sizeOf _ = sizeOf (undefined :: CUInt)
+  alignment _ = alignment (undefined :: CUInt)
+  peek ptr = do
+    evid <- peek (castPtr ptr) :: IO CUInt
+    if evid `S.member` allVREventTypes
+      then return . KnownEvent .toEnum $ fromIntegral evid
+      else return $ UnknownEvent evid
+  poke ptr (KnownEvent ev) = poke ptr (UnknownEvent . fromIntegral $ fromEnum ev)
+  poke ptr (UnknownEvent ev) = poke (castPtr ptr) ev
+
+
 {#enum EDeviceActivityLevel {}
   with prefix="EDeviceActivityLevel_k" deriving (Show, Eq) #}
 {#enum EVRButtonId {}
@@ -180,7 +205,6 @@ type ColorSpace             = EColorSpace
 type HmdTrackingResult      = ETrackingResult
 type TrackedDeviceClass     = ETrackedDeviceClass
 type TrackingUniverseOrigin = ETrackingUniverseOrigin
-type TrackedDeviceProperty  = ETrackedDeviceProperty
 type TrackedPropertyError   = ETrackedPropertyError
 type VRSubmitFlags_t        = EVRSubmitFlags
 type VRState_t              = EVRState
@@ -555,16 +579,15 @@ data VREvent_Data
 {#pointer *VREvent_Data_t as VREvent_DataPtr -> VREvent_Data #}
 
 --TODO remainder
-peekData :: CUInt -> Ptr VREvent_Data -> IO VREvent_Data
+peekData :: VREventType -> Ptr VREvent_Data -> IO VREvent_Data
 peekData = go
   where
-{-
-    go VREvent_ButtonPress = peekController
-    go VREvent_ButtonUnpress = peekController
-    go VREvent_ButtonTouch = peekController
-    go VREvent_ButtonUntouch = peekController
--}
-    go evid ptr = peekReserved ptr
+    go (KnownEvent VREvent_ButtonPress) = peekController
+    go (KnownEvent VREvent_ButtonUnpress) = peekController
+    go (KnownEvent VREvent_ButtonTouch) = peekController
+    go (KnownEvent VREvent_ButtonUntouch) = peekController
+
+    go _ = peekReserved 
 
     peekController ptr = VREvent_Controller . toEnum . fromIntegral
                          <$> {#get VREvent_Data_t.controller.button#} ptr
@@ -578,7 +601,7 @@ deriving instance Storable VROverlayIntersectionMaskPrimitive_Data_t -- needed f
 
 -- pure structs
 data VREvent = VREvent
-  { eventType :: CUInt
+  { eventType :: VREventType -- either out-of-range, or a known event
   , eventTrackedDeviceIndex :: TrackedDeviceIndex
   , eventAgeSeconds :: CFloat
   , eventData :: VREvent_Data
@@ -591,11 +614,11 @@ instance Storable VREvent where
   sizeOf _ = 36
   alignment _ = 4
   peek ptr = do
-    evid <- peekByteOff ptr 0
-    VREvent evid
+    evty<- peekByteOff ptr 0
+    VREvent evty
       <$> peekByteOff ptr 4
       <*> peekByteOff ptr 8
-      <*> peekData evid (castPtr $ ptr `plusPtr` 12)
+      <*> peekData evty (castPtr $ ptr `plusPtr` 12)
   poke = error "VREvent poke not supported"
 
 
@@ -732,8 +755,8 @@ deriving instance Storable VR_IVRDriverManager_FnTable
 {#fun VR_IVRSystem_FnTable->PollNextEvent as ivrSystemPollNextEvent_
       { coerce `VR_IVRSystem_FnTable'
       , castPtr `Ptr VR_IVRSystem_FnTable'
-      , alloca- `VREvent' peek*
-      , '($ (fromIntegral $ sizeOf (undefined :: VREvent)))'- `CUInt' } -> `Bool' #}
+      , `VREventPtr' -- we cannot peek this if this returns False
+      , `Int' } -> `Bool' #}
 
 {#fun VR_IVRSystem_FnTable->GetStringTrackedDeviceProperty as ivrSystemGetStringTrackedDeviceProperty_
       { coerce `VR_IVRSystem_FnTable'

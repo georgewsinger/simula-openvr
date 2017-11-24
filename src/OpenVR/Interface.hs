@@ -76,7 +76,7 @@ makeVrCall 'ivrSystemGetOutputDevice_ "ivrSystemGetOutputDevice"
 makeVrCall 'ivrSystemGetRecommendedRenderTargetSize_ "ivrSystemGetRecommendedRenderTargetSize"
 makeVrCall 'ivrSystemGetProjectionMatrix_ "ivrSystemGetProjectionMatrix"
 makeVrCall 'ivrSystemGetEyeToHeadTransform_ "ivrSystemGetEyeToHeadTransform"
-makeVrCall 'ivrSystemPollNextEvent_ "ivrSystemPollNextEvent"
+makeVrCall 'ivrSystemPollNextEvent_ "ivrSystemPollNextEvent'"
 makeVrCall 'ivrSystemGetStringTrackedDeviceProperty_ "ivrSystemGetStringTrackedDeviceProperty'"
 
 makeVrCall 'ivrRenderModelsLoadRenderModel_Async_ "ivrRenderModelsLoadRenderModel_Async"
@@ -128,3 +128,12 @@ ivrSystemGetStringTrackedDeviceProperty :: TrackedDeviceIndex -> ETrackedDeviceP
 ivrSystemGetStringTrackedDeviceProperty idx prop = allocaArray k_unMaxPropertyStringSize $ \strPtr ->
   ivrSystemGetStringTrackedDeviceProperty' idx prop strPtr k_unMaxPropertyStringSize >>= \(_, err) ->
   (err,) <$> peekCString strPtr
+
+
+ivrSystemPollNextEvent :: IO (Maybe VREvent)
+ivrSystemPollNextEvent = alloca $ \ptr ->
+  ivrSystemPollNextEvent' ptr (sizeOf (undefined :: VREvent)) >>= peekEventMaybe ptr
+
+  where
+    peekEventMaybe ptr True = Just <$> peek ptr
+    peekEventMaybe _ False = return Nothing
