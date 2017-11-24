@@ -30,6 +30,7 @@ default-extensions:
   - RecordWildCards
   - GeneralizedNewtypeDeriving
   - TypeOperators
+  - TupleSections
 
 dependencies:
   - base >= 4.9 && < 5

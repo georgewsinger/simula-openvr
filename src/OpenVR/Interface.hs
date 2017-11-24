@@ -77,9 +77,12 @@ makeVrCall 'ivrSystemGetRecommendedRenderTargetSize_ "ivrSystemGetRecommendedRen
 makeVrCall 'ivrSystemGetProjectionMatrix_ "ivrSystemGetProjectionMatrix"
 makeVrCall 'ivrSystemGetEyeToHeadTransform_ "ivrSystemGetEyeToHeadTransform"
 makeVrCall 'ivrSystemPollNextEvent_ "ivrSystemPollNextEvent"
+makeVrCall 'ivrSystemGetStringTrackedDeviceProperty_ "ivrSystemGetStringTrackedDeviceProperty'"
 
 makeVrCall 'ivrRenderModelsLoadRenderModel_Async_ "ivrRenderModelsLoadRenderModel_Async"
 makeVrCall 'ivrRenderModelsLoadTexture_Async_ "ivrRenderModelsLoadTexture_Async"
+makeVrCall 'ivrRenderModelsFreeRenderModel_ "ivrRenderModelsFreeRenderModel"
+makeVrCall 'ivrRenderModelsFreeTexture_ "ivrRenderModelsFreeTexture"
 
 -- modified lengthArray0 that respects maximum size
 lengthArray :: (Storable a, Eq a) => Int ->  a -> Ptr a -> IO Int
@@ -118,3 +121,10 @@ ivrCompositorGetVulkanDeviceExtensionsRequired dev = do
   len <- ivrCompositorGetVulkanDeviceExtensionsRequired' dev nullPtr 0
   str <- allocaArray len $ \ptr -> ivrCompositorGetVulkanDeviceExtensionsRequired' dev ptr len >> peekCString ptr
   return (words str)
+
+ivrSystemGetStringTrackedDeviceProperty :: TrackedDeviceIndex -> ETrackedDeviceProperty
+                                        -> IO (ETrackedPropertyError, String)
+
+ivrSystemGetStringTrackedDeviceProperty idx prop = allocaArray k_unMaxPropertyStringSize $ \strPtr ->
+  ivrSystemGetStringTrackedDeviceProperty' idx prop strPtr k_unMaxPropertyStringSize >>= \(_, err) ->
+  (err,) <$> peekCString strPtr

@@ -689,17 +689,38 @@ deriving instance Storable VR_IVRDriverManager_FnTable
       { coerce `VR_IVRSystem_FnTable'
       , castPtr `Ptr VR_IVRSystem_FnTable'
       , alloca- `VREvent' peek*
-      , '($ (fromIntegral $ sizeOf (undefined :: VREvent)))'- `CUInt' void- } -> `Bool' #}
+      , '($ (fromIntegral $ sizeOf (undefined :: VREvent)))'- `CUInt' } -> `Bool' #}
+
+{#fun VR_IVRSystem_FnTable->GetStringTrackedDeviceProperty as ivrSystemGetStringTrackedDeviceProperty_
+      { coerce `VR_IVRSystem_FnTable'
+      , castPtr `Ptr VR_IVRSystem_FnTable'
+      , `TrackedDeviceIndex'
+      , `ETrackedDeviceProperty'
+      , id `Ptr CChar'
+      , `Int'
+      , alloca- `ETrackedPropertyError' peekEnum* } -> `Int' #}
 
 -- handle freeing gracefully
 {#fun VR_IVRRenderModels_FnTable->LoadRenderModel_Async as ivrRenderModelsLoadRenderModel_Async_
       { coerce `VR_IVRRenderModels_FnTable'
       , castPtr `Ptr VR_IVRRenderModels_FnTable'
       , `String'
-      , alloca- `RenderModel' 'peek >=> peek'* } -> `EVRRenderModelError' #}
+      , alloca- `RenderModelPtr' peek* } -> `EVRRenderModelError' #}
 
 {#fun VR_IVRRenderModels_FnTable->LoadTexture_Async as ivrRenderModelsLoadTexture_Async_
       { coerce `VR_IVRRenderModels_FnTable'
       , castPtr `Ptr VR_IVRRenderModels_FnTable'
       , `TextureID'
-      , alloca- `RenderModel_TextureMap' 'peek >=> peek'* } -> `EVRRenderModelError' #}
+      , alloca- `RenderModel_TextureMapPtr' peek* } -> `EVRRenderModelError' #}
+
+{#fun VR_IVRRenderModels_FnTable->FreeRenderModel as ivrRenderModelsFreeRenderModel_
+      { coerce `VR_IVRRenderModels_FnTable'
+      , castPtr `Ptr VR_IVRRenderModels_FnTable'
+      , `RenderModelPtr' } -> `()' #}
+
+{#fun VR_IVRRenderModels_FnTable->LoadTexture_Async as ivrRenderModelsFreeTexture_
+      { coerce `VR_IVRRenderModels_FnTable'
+      , castPtr `Ptr VR_IVRRenderModels_FnTable'
+      , `RenderModel_TextureMapPtr' } -> `()' #}
+
+
