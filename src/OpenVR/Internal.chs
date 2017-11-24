@@ -584,15 +584,16 @@ data VREvent = VREvent
 
 {#pointer *VREvent_t as VREventPtr -> VREvent #}
 
+-- god damnit Valve (pragma pack 4.)
 instance Storable VREvent where
-  sizeOf _ = {#sizeof VREvent_t#}
-  alignment _ = {#alignof VREvent_t#}
+  sizeOf _ = 36
+  alignment _ = 4
   peek ptr = do
-    eventType <- (toEnum . fromIntegral) <$> {#get VREvent_t->eventType#} ptr
+    eventType <- (toEnum . fromIntegral) <$> (peekByteOff ptr 0 :: IO CUInt)
     VREvent eventType
-      <$> {#get VREvent_t->trackedDeviceIndex#} ptr
-      <*> {#get VREvent_t->eventAgeSeconds#} ptr
-      <*> peekData eventType (castPtr $ ptr `plusPtr` {#offsetof VREvent_t->data#})
+      <$> peekByteOff ptr 4
+      <*> peekByteOff ptr 8
+      <*> peekData eventType (castPtr $ ptr `plusPtr` 12)
   poke = error "VREvent poke not supported"
 
 
