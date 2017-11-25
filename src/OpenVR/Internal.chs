@@ -694,6 +694,9 @@ deriving instance Storable VR_IVRDriverManager_FnTable
 
 -- type-safe context stuff
 
+-- IVRCompositor
+
+-- virtual EVRCompositorError Submit( EVREye eEye, const Texture_t *pTexture, const VRTextureBounds_t* pBounds = 0, EVRSubmitFlags nSubmitFlags = Submit_Default ) = 0;
 {#fun VR_IVRCompositor_FnTable->Submit as ivrCompositorSubmit_
       { coerce `VR_IVRCompositor_FnTable'
       , castPtr `Ptr VR_IVRCompositor_FnTable'
@@ -703,6 +706,7 @@ deriving instance Storable VR_IVRDriverManager_FnTable
       , `EVRSubmitFlags' } -> `EVRCompositorError' #}
 
 
+-- virtual EVRCompositorError WaitGetPoses( VR_ARRAY_COUNT(unRenderPoseArrayCount) TrackedDevicePose_t* pRenderPoseArray, uint32_t unRenderPoseArrayCount,
 {#fun VR_IVRCompositor_FnTable->WaitGetPoses as ivrCompositorWaitGetPoses_
       { coerce `VR_IVRCompositor_FnTable'
       , castPtr `Ptr VR_IVRCompositor_FnTable'
@@ -711,18 +715,155 @@ deriving instance Storable VR_IVRDriverManager_FnTable
       , id `TrackedDevicePosePtr'
       , `Int' } -> `EVRCompositorError' #}
 
+-- virtual uint32_t GetVulkanInstanceExtensionsRequired( VR_OUT_STRING() char *pchValue, uint32_t unBufferSize ) = 0;
 {#fun VR_IVRCompositor_FnTable->GetVulkanInstanceExtensionsRequired as ivrCompositorGetVulkanInstanceExtensionsRequired_
       { coerce `VR_IVRCompositor_FnTable'
       , castPtr `Ptr VR_IVRCompositor_FnTable'
       , id `Ptr CChar'
       , `Int'} -> `Int'#}
 
+-- virtual uint32_t GetVulkanDeviceExtensionsRequired( VkPhysicalDevice_T *pPhysicalDevice, VR_OUT_STRING() char *pchValue, uint32_t unBufferSize ) = 0;
 {#fun VR_IVRCompositor_FnTable->GetVulkanDeviceExtensionsRequired as ivrCompositorGetVulkanDeviceExtensionsRequired_
       { coerce `VR_IVRCompositor_FnTable'
       , castPtr `Ptr VR_IVRCompositor_FnTable'
       , id `Ptr ()'
       , id `Ptr CChar'
-      , `Int'} -> `Int'#}
+, `Int'} -> `Int'#}
+
+-- virtual void SetTrackingSpace( ETrackingUniverseOrigin eOrigin ) = 0;
+{#fun VR_IVRCompositor_FnTable->SetTrackingSpace as ivrCompositorSetTrackignSpace_
+      { coerce `VR_IVRCompositor_FnTable'
+      , castPtr `Ptr VR_IVRCompositor_FnTable'
+      , `ETrackingUniverseOrigin' } -> `()' #}
+
+-- virtual ETrackingUniverseOrigin GetTrackingSpace() = 0;
+{#fun VR_IVRCompositor_FnTable->GetTrackingSpace as ivrCompositorGetTrackignSpace_
+      { coerce `VR_IVRCompositor_FnTable'
+      , castPtr `Ptr VR_IVRCompositor_FnTable'} -> `ETrackingUniverseOrigin' #}
+
+--TODO: VR_ARRAY_COUNT(unGamePoseArrayCount) TrackedDevicePose_t* pGamePoseArray, uint32_t unGamePoseArrayCount ) = 0;
+--TODO: virtual EVRCompositorError GetLastPoses( VR_ARRAY_COUNT( unRenderPoseArrayCount ) TrackedDevicePose_t* pRenderPoseArray, uint32_t unRenderPoseArrayCount,
+-- TODO: VR_ARRAY_COUNT( unGamePoseArrayCount ) TrackedDevicePose_t* pGamePoseArray, uint32_t unGamePoseArrayCount ) = 0;
+
+-- virtual EVRCompositorError GetLastPoseForTrackedDeviceIndex( TrackedDeviceIndex_t unDeviceIndex, TrackedDevicePose_t *pOutputPose, TrackedDevicePose_t *pOutputGamePose ) = 0;
+{#fun VR_IVRCompositor_FnTable->GetLastPoseForTrackedDeviceIndex as ivrCompositorGetLastPoseForTrackedDeviceIndex_
+      { coerce `VR_IVRCompositor_FnTable'
+      , castPtr `Ptr VR_IVRCompositor_FnTable'
+      , `TrackedDeviceIndex'
+      , alloca- `TrackedDevicePose' peek*
+      , alloca- `TrackedDevicePose' peek*} -> `EVRCompositorError' #}
+
+--virtual void ClearLastSubmittedFrame() = 0;
+{#fun VR_IVRCompositor_FnTable->ClearLastSubmittedFrame as ivrCompositorClearLastSubmittedFrame_
+      { coerce `VR_IVRCompositor_FnTable'
+      , castPtr `Ptr VR_IVRCompositor_FnTable'} -> `()' #}
+
+--virtual void PostPresentHandoff() = 0;
+{#fun VR_IVRCompositor_FnTable->PostPresentHandoff as ivrCompositorPostPresentHandoff_
+      { coerce `VR_IVRCompositor_FnTable'
+      , castPtr `Ptr VR_IVRCompositor_FnTable'} -> `()' #}
+
+--TODO: virtual bool GetFrameTiming( Compositor_FrameTiming *pTiming, uint32_t unFramesAgo = 0 ) = 0;
+--TODO: virtual uint32_t GetFrameTimings( Compositor_FrameTiming *pTiming, uint32_t nFrames ) = 0;
+--virtual float GetFrameTimeRemaining() = 0;
+{#fun VR_IVRCompositor_FnTable->GetFrameTimeRemaining as ivrCompositorGetFrameTimeRemaining_
+      { coerce `VR_IVRCompositor_FnTable'
+      , castPtr `Ptr VR_IVRCompositor_FnTable'} -> `()' #}
+
+--TODO: virtual void GetCumulativeStats( Compositor_CumulativeStats *pStats, uint32_t nStatsSizeInBytes ) = 0;
+--TODO: virtual void FadeToColor( float fSeconds, float fRed, float fGreen, float fBlue, float fAlpha, bool bBackground = false ) = 0;
+--TODO: virtual HmdColor_t GetCurrentFadeColor( bool bBackground = false ) = 0;
+--TODO: virtual void FadeGrid( float fSeconds, bool bFadeIn ) = 0;
+
+--virtual float GetCurrentGridAlpha() = 0;
+{#fun VR_IVRCompositor_FnTable->GetCurrentGridAlpha as ivrCompositorGetCurrentGridAlpha_
+      { coerce `VR_IVRCompositor_FnTable'
+      , castPtr `Ptr VR_IVRCompositor_FnTable'} -> `()' #}
+
+--TODO: virtual EVRCompositorError SetSkyboxOverride( VR_ARRAY_COUNT( unTextureCount ) const Texture_t *pTextures, uint32_t unTextureCount ) = 0;
+
+--virtual void ClearSkyboxOverride() = 0;
+{#fun VR_IVRCompositor_FnTable->ClearSkyboxOverride as ivrCompositorClearSkyboxOverride_
+      { coerce `VR_IVRCompositor_FnTable'
+      , castPtr `Ptr VR_IVRCompositor_FnTable'} -> `()' #}
+
+--virtual void CompositorBringToFront() = 0;
+{#fun VR_IVRCompositor_FnTable->CompositorBringToFront as ivrCompositorBringToFront_
+      { coerce `VR_IVRCompositor_FnTable'
+      , castPtr `Ptr VR_IVRCompositor_FnTable'} -> `()' #}
+
+--virtual void CompositorGoToBack() = 0;
+{#fun VR_IVRCompositor_FnTable->CompositorGoToBack as ivrCompositorGoToBack_
+      { coerce `VR_IVRCompositor_FnTable'
+      , castPtr `Ptr VR_IVRCompositor_FnTable'} -> `()' #}
+
+--virtual void CompositorQuit() = 0;
+{#fun VR_IVRCompositor_FnTable->CompositorQuit as ivrCompositorQuit_
+      { coerce `VR_IVRCompositor_FnTable'
+      , castPtr `Ptr VR_IVRCompositor_FnTable'} -> `()' #}
+
+--virtual bool IsFullscreen() = 0;
+{#fun VR_IVRCompositor_FnTable->IsFullscreen as ivrCompositorIsFullscreen_
+      { coerce `VR_IVRCompositor_FnTable'
+      , castPtr `Ptr VR_IVRCompositor_FnTable'} -> `()' #}
+
+--virtual uint32_t GetCurrentSceneFocusProcess() = 0;
+{#fun VR_IVRCompositor_FnTable->GetCurrentSceneFocusProcess as ivrCompositorGetCurrentSceneFocusProcess_
+      { coerce `VR_IVRCompositor_FnTable'
+      , castPtr `Ptr VR_IVRCompositor_FnTable'} -> `()' #}
+
+--virtual uint32_t GetLastFrameRenderer() = 0;
+{#fun VR_IVRCompositor_FnTable->GetLastFrameRenderer as ivrCompositorGetLastFrameRenderer_
+      { coerce `VR_IVRCompositor_FnTable'
+      , castPtr `Ptr VR_IVRCompositor_FnTable'} -> `()' #}
+
+--virtual bool CanRenderScene() = 0;
+{#fun VR_IVRCompositor_FnTable->CanRenderScene as ivrCompositorCanRenderScene_
+      { coerce `VR_IVRCompositor_FnTable'
+      , castPtr `Ptr VR_IVRCompositor_FnTable'} -> `()' #}
+
+--virtual void ShowMirrorWindow() = 0;
+{#fun VR_IVRCompositor_FnTable->ShowMirrorWindow as ivrCompositorShowMirrorWindow_
+      { coerce `VR_IVRCompositor_FnTable'
+      , castPtr `Ptr VR_IVRCompositor_FnTable'} -> `()' #}
+
+--virtual void HideMirrorWindow() = 0;
+{#fun VR_IVRCompositor_FnTable->HideMirrorWindow as ivrCompositorHideMirrorWindow_
+      { coerce `VR_IVRCompositor_FnTable'
+      , castPtr `Ptr VR_IVRCompositor_FnTable'} -> `()' #}
+
+--virtual bool IsMirrorWindowVisible() = 0;
+{#fun VR_IVRCompositor_FnTable->IsMirrorWindowVisible as ivrCompositorIsMirrorWindowVisible_
+      { coerce `VR_IVRCompositor_FnTable'
+      , castPtr `Ptr VR_IVRCompositor_FnTable'} -> `()' #}
+
+--virtual void CompositorDumpImages() = 0;
+{#fun VR_IVRCompositor_FnTable->CompositorDumpImages as ivrCompositorCompositorDumpImages_
+      { coerce `VR_IVRCompositor_FnTable'
+      , castPtr `Ptr VR_IVRCompositor_FnTable'} -> `()' #}
+
+--virtual bool ShouldAppRenderWithLowResources() = 0;
+{#fun VR_IVRCompositor_FnTable->ShouldAppRenderWithLowResources as ivrCompositorShouldAppRenderWithLowResources_
+      { coerce `VR_IVRCompositor_FnTable'
+      , castPtr `Ptr VR_IVRCompositor_FnTable'} -> `()' #}
+
+--TODO: virtual void ForceInterleavedReprojectionOn( bool bOverride ) = 0;
+--virtual void ForceReconnectProcess() = 0;
+{#fun VR_IVRCompositor_FnTable->ForceReconnectProcess as ivrCompositorForceReconnectProcess_
+      { coerce `VR_IVRCompositor_FnTable'
+      , castPtr `Ptr VR_IVRCompositor_FnTable'} -> `()' #}
+
+--TODO: virtual void SuspendRendering( bool bSuspend ) = 0;
+--TODO: virtual vr::EVRCompositorError GetMirrorTextureD3D11( vr::EVREye eEye, void *pD3D11DeviceOrResource, void **ppD3D11ShaderResourceView ) = 0;
+--TODO: virtual void ReleaseMirrorTextureD3D11( void *pD3D11ShaderResourceView ) = 0;
+--TODO: virtual vr::EVRCompositorError GetMirrorTextureGL( vr::EVREye eEye, vr::glUInt_t *pglTextureId, vr::glSharedTextureHandle_t *pglSharedTextureHandle ) = 0;
+--TODO: virtual bool ReleaseSharedGLTexture( vr::glUInt_t glTextureId, vr::glSharedTextureHandle_t glSharedTextureHandle ) = 0;
+--TODO: virtual void LockGLSharedTextureForAccess( vr::glSharedTextureHandle_t glSharedTextureHandle ) = 0;
+--TODO: virtual void UnlockGLSharedTextureForAccess( vr::glSharedTextureHandle_t glSharedTextureHandle ) = 0;
+--TODO: virtual void SetExplicitTimingMode( bool bExplicitTimingMode ) = 0;
+--TODO: virtual EVRCompositorError SubmitExplicitTimingData() = 0;
+
+-- IVRSystem
 
 {#fun VR_IVRSystem_FnTable->GetOutputDevice as ivrSystemGetOutputDevice_
       { coerce `VR_IVRSystem_FnTable'
@@ -767,6 +908,8 @@ deriving instance Storable VR_IVRDriverManager_FnTable
       , `Int'
       , alloca- `ETrackedPropertyError' peekEnum* } -> `Int' #}
 
+-- IVRRenderModels
+
 -- handle freeing gracefully
 {#fun VR_IVRRenderModels_FnTable->LoadRenderModel_Async as ivrRenderModelsLoadRenderModel_Async_
       { coerce `VR_IVRRenderModels_FnTable'
@@ -789,5 +932,4 @@ deriving instance Storable VR_IVRDriverManager_FnTable
       { coerce `VR_IVRRenderModels_FnTable'
       , castPtr `Ptr VR_IVRRenderModels_FnTable'
       , `RenderModel_TextureMapPtr' } -> `()' #}
-
 
