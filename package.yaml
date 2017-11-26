@@ -28,12 +28,20 @@ default-extensions:
   - TypeFamilies
   - AllowAmbiguousTypes
   - RecordWildCards
+  - GeneralizedNewtypeDeriving
+  - TypeOperators
+  - TupleSections
 
 dependencies:
   - base >= 4.9 && < 5
   - containers
   - linear
   - unix
+  - lens
+  - aeson
+  - template-haskell
+  - text
+  - bytestring
 
 build-tools:
   - c2hs
@@ -41,6 +49,16 @@ build-tools:
 extra-libraries:
   - openvr_api
 
+include-dirs:
+  - openvr/headers
+  - cbits
+
+
 library:
-  source-dirs: [src]
-  exposed-modules: [OpenVR]
+  source-dirs: src
+  c-sources: cbits/*.c
+  exposed-modules:
+    - OpenVR
+    - OpenVR.Internal
+    - OpenVR.Interface
+    - OpenVR.TH
