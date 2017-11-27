@@ -837,7 +837,7 @@ deriving instance Storable VR_IVRDriverManager_FnTable
       , castPtr `Ptr VR_IVRCompositor_FnTable'} -> `()' #}
 
 --{#pointer *Compositor_CumulativeStats as Compositor_CumulativeStatsPtr -> OVRCompositor_CumulativeStats #}
---QWERTY: virtual void GetCumulativeStats( Compositor_CumulativeStats *pStats, uint32_t nStatsSizeInBytes ) = 0;
+-- virtual void GetCumulativeStats( Compositor_CumulativeStats *pStats, uint32_t nStatsSizeInBytes ) = 0;
 {#fun VR_IVRCompositor_FnTable->GetCumulativeStats as ivrCompositorGetCumulativeStats_
       { coerce `VR_IVRCompositor_FnTable'
       , castPtr `Ptr VR_IVRCompositor_FnTable'
@@ -1015,7 +1015,8 @@ deriving instance Storable VR_IVRDriverManager_FnTable
 
 --TODO: virtual void GetProjectionRaw( EVREye eEye, float *pfLeft, float *pfRight, float *pfTop, float *pfBottom ) = 0;
 --TODO: virtual bool ComputeDistortion( EVREye eEye, float fU, float fV, DistortionCoordinates_t *pDistortionCoordinates ) = 0;
---TODO: virtual HmdMatrix34_t GetEyeToHeadTransform( EVREye eEye ) = 0;
+
+-- virtual HmdMatrix34_t GetEyeToHeadTransform( EVREye eEye ) = 0;
 {#fun VR_IVRSystem_GetEyeToHeadTransform as ivrSystemGetEyeToHeadTransform_
       { coerce `VR_IVRSystem_FnTable'
       , castPtr `Ptr VR_IVRSystem_FnTable'
@@ -1023,8 +1024,6 @@ deriving instance Storable VR_IVRDriverManager_FnTable
       , alloca- `M34 Float' peek* } -> `()' #}
 
 --TODO: virtual bool GetTimeSinceLastVsync( float *pfSecondsSinceLastVsync, uint64_t *pulFrameCounter ) = 0;
---TODO: virtual int32_t GetD3D9AdapterIndex() = 0;
---TODO: virtual void GetDXGIOutputInfo( int32_t *pnAdapterIndex ) = 0;
 --TODO: virtual void GetOutputDevice( uint64_t *pnDevice, ETextureType textureType, VkInstance_T *pInstance = nullptr ) = 0;
 {#fun VR_IVRSystem_FnTable->GetOutputDevice as ivrSystemGetOutputDevice_
       { coerce `VR_IVRSystem_FnTable'
@@ -1033,24 +1032,75 @@ deriving instance Storable VR_IVRDriverManager_FnTable
       , `ETextureType'
       , id `Ptr ()'} -> `()'#}
 
---TODO: virtual bool IsDisplayOnDesktop() = 0;
---TODO: virtual bool SetDisplayVisibility( bool bIsVisibleOnDesktop ) = 0;
+-- virtual bool IsDisplayOnDesktop() = 0;
+{#fun VR_IVRSystem_FnTable->IsDisplayOnDesktop as ivrSystemIsDisplayOnDesktop_
+      { coerce `VR_IVRSystem_FnTable'
+      , castPtr `Ptr VR_IVRSystem_FnTable'} -> `Bool'#}
+
+-- virtual bool SetDisplayVisibility( bool bIsVisibleOnDesktop ) = 0;
+{#fun VR_IVRSystem_FnTable->SetDisplayVisibility as ivrSystemSetDisplayVisibility_
+      { coerce `VR_IVRSystem_FnTable'
+      , castPtr `Ptr VR_IVRSystem_FnTable'
+      , `Bool'} -> `Bool'#}
+
 --TODO: virtual void GetDeviceToAbsoluteTrackingPose( ETrackingUniverseOrigin eOrigin, float fPredictedSecondsToPhotonsFromNow, VR_ARRAY_COUNT(unTrackedDevicePoseArrayCount) TrackedDevicePose_t *pTrackedDevicePoseArray, uint32_t unTrackedDevicePoseArrayCount ) = 0;
---TODO: virtual void ResetSeatedZeroPose() = 0;
+
+-- virtual void ResetSeatedZeroPose() = 0;
+{#fun VR_IVRSystem_FnTable->ResetSeatedZeroPose as ivrSystemResetSeatedZeroPose_
+      { coerce `VR_IVRSystem_FnTable'
+      , castPtr `Ptr VR_IVRSystem_FnTable'} -> `()'#}
+
 --TODO: virtual HmdMatrix34_t GetSeatedZeroPoseToStandingAbsoluteTrackingPose() = 0;
 --TODO: virtual HmdMatrix34_t GetRawZeroPoseToStandingAbsoluteTrackingPose() = 0;
+
 --TODO: virtual uint32_t GetSortedTrackedDeviceIndicesOfClass( ETrackedDeviceClass eTrackedDeviceClass, VR_ARRAY_COUNT(unTrackedDeviceIndexArrayCount) vr::TrackedDeviceIndex_t *punTrackedDeviceIndexArray, uint32_t unTrackedDeviceIndexArrayCount, vr::TrackedDeviceIndex_t unRelativeToTrackedDeviceIndex = k_unTrackedDeviceIndex_Hmd ) = 0;
---TODO: virtual EDeviceActivityLevel GetTrackedDeviceActivityLevel( vr::TrackedDeviceIndex_t unDeviceId ) = 0;
+
+-- virtual EDeviceActivityLevel GetTrackedDeviceActivityLevel( vr::TrackedDeviceIndex_t unDeviceId ) = 0;
+{#fun VR_IVRSystem_FnTable->GetTrackedDeviceActivityLevel as ivrSystemGetTrackedDeviceActivityLevel_
+      { coerce `VR_IVRSystem_FnTable'
+      , castPtr `Ptr VR_IVRSystem_FnTable'
+      , `TrackedDeviceIndex'} -> `EDeviceActivityLevel'#}
+
 --TODO: virtual void ApplyTransform( TrackedDevicePose_t *pOutputPose, const TrackedDevicePose_t *pTrackedDevicePose, const HmdMatrix34_t *pTransform ) = 0;
---TODO: virtual vr::TrackedDeviceIndex_t GetTrackedDeviceIndexForControllerRole( vr::ETrackedControllerRole unDeviceType ) = 0;
---TODO: virtual vr::ETrackedControllerRole GetControllerRoleForTrackedDeviceIndex( vr::TrackedDeviceIndex_t unDeviceIndex ) = 0;
---TODO: virtual ETrackedDeviceClass GetTrackedDeviceClass( vr::TrackedDeviceIndex_t unDeviceIndex ) = 0;
---TODO: virtual bool IsTrackedDeviceConnected( vr::TrackedDeviceIndex_t unDeviceIndex ) = 0;
+-- {#fun VR_IVRSystem_FnTable->ApplyTransform as ivrSystemApplyTransform_
+--       { coerce `VR_IVRSystem_FnTable'
+--       , castPtr `Ptr VR_IVRSystem_FnTable'
+--       , `TrackedDevicePose'
+--       , `TrackedDevicePose'
+--       , `M34 Float'} -> `()'#}
+
+-- virtual vr::TrackedDeviceIndex_t GetTrackedDeviceIndexForControllerRole( vr::ETrackedControllerRole unDeviceType ) = 0;
+{#fun VR_IVRSystem_FnTable->GetTrackedDeviceIndexForControllerRole as ivrSystemGetTrackedDeviceIndexForControllerRole_
+      { coerce `VR_IVRSystem_FnTable'
+      , castPtr `Ptr VR_IVRSystem_FnTable'
+      , `ETrackedControllerRole'} -> `TrackedDeviceIndex'#}
+
+-- virtual vr::ETrackedControllerRole GetControllerRoleForTrackedDeviceIndex( vr::TrackedDeviceIndex_t unDeviceIndex ) = 0;
+{#fun VR_IVRSystem_FnTable->GetControllerRoleForTrackedDeviceIndex as ivrSystemGetControllerRoleForTrackedDeviceIndex_
+      { coerce `VR_IVRSystem_FnTable'
+      , castPtr `Ptr VR_IVRSystem_FnTable'
+      , `TrackedDeviceIndex'} -> `ETrackedControllerRole'#}
+
+-- virtual ETrackedDeviceClass GetTrackedDeviceClass( vr::TrackedDeviceIndex_t unDeviceIndex ) = 0;
+{#fun VR_IVRSystem_FnTable->GetTrackedDeviceClass as ivrSystemGetTrackedDeviceClass_
+      { coerce `VR_IVRSystem_FnTable'
+      , castPtr `Ptr VR_IVRSystem_FnTable'
+      , `TrackedDeviceIndex'} -> `ETrackedDeviceClass'#}
+
+-- virtual bool IsTrackedDeviceConnected( vr::TrackedDeviceIndex_t unDeviceIndex ) = 0;
+{#fun VR_IVRSystem_FnTable->IsTrackedDeviceConnected as ivrSystemIsTrackedDeviceConnected_
+      { coerce `VR_IVRSystem_FnTable'
+      , castPtr `Ptr VR_IVRSystem_FnTable'
+      , `TrackedDeviceIndex'} -> `Bool'#}
+
+
 --TODO: virtual bool GetBoolTrackedDeviceProperty( vr::TrackedDeviceIndex_t unDeviceIndex, ETrackedDeviceProperty prop, ETrackedPropertyError *pError = 0L ) = 0;
 --TODO: virtual float GetFloatTrackedDeviceProperty( vr::TrackedDeviceIndex_t unDeviceIndex, ETrackedDeviceProperty prop, ETrackedPropertyError *pError = 0L ) = 0;
 --TODO: virtual int32_t GetInt32TrackedDeviceProperty( vr::TrackedDeviceIndex_t unDeviceIndex, ETrackedDeviceProperty prop, ETrackedPropertyError *pError = 0L ) = 0;
 --TODO: virtual uint64_t GetUint64TrackedDeviceProperty( vr::TrackedDeviceIndex_t unDeviceIndex, ETrackedDeviceProperty prop, ETrackedPropertyError *pError = 0L ) = 0;
+
 --TODO: virtual HmdMatrix34_t GetMatrix34TrackedDeviceProperty( vr::TrackedDeviceIndex_t unDeviceIndex, ETrackedDeviceProperty prop, ETrackedPropertyError *pError = 0L ) = 0;
+
 -- virtual uint32_t GetStringTrackedDeviceProperty( vr::TrackedDeviceIndex_t unDeviceIndex, ETrackedDeviceProperty prop, VR_OUT_STRING() char *pchValue, uint32_t unBufferSize, ETrackedPropertyError *pError = 0L ) = 0;
 {#fun VR_IVRSystem_FnTable->GetStringTrackedDeviceProperty as ivrSystemGetStringTrackedDeviceProperty_
       { coerce `VR_IVRSystem_FnTable'
@@ -1060,7 +1110,13 @@ deriving instance Storable VR_IVRDriverManager_FnTable
       , id `Ptr CChar'
       , `Int'
       , alloca- `ETrackedPropertyError' peekEnum* } -> `Int' #}
---TODO: virtual const char *GetPropErrorNameFromEnum( ETrackedPropertyError error ) = 0;
+
+-- virtual const char *GetPropErrorNameFromEnum( ETrackedPropertyError error ) = 0;
+{#fun VR_IVRSystem_FnTable->GetPropErrorNameFromEnum as ivrSystemGetPropErrorNameFromEnum_
+      { coerce `VR_IVRSystem_FnTable'
+      , castPtr `Ptr VR_IVRSystem_FnTable'
+      , `ETrackedPropertyError'} -> `String' #}
+
 -- virtual bool PollNextEvent( VREvent_t *pEvent, uint32_t uncbVREvent ) = 0;
 -- i'm sure there's a better way to pass sizeof of a struct
 {#fun VR_IVRSystem_FnTable->PollNextEvent as ivrSystemPollNextEvent_
@@ -1070,21 +1126,76 @@ deriving instance Storable VR_IVRDriverManager_FnTable
       , `Int' } -> `Bool' #}
 
 --TODO: virtual bool PollNextEventWithPose( ETrackingUniverseOrigin eOrigin, VREvent_t *pEvent, uint32_t uncbVREvent, vr::TrackedDevicePose_t *pTrackedDevicePose ) = 0;
---TODO: virtual const char *GetEventTypeNameFromEnum( EVREventType eType ) = 0;
+
+-- virtual const char *GetEventTypeNameFromEnum( EVREventType eType ) = 0;
+{#fun VR_IVRSystem_FnTable->GetEventTypeNameFromEnum as ivrSystemGetEventTypeNameFromEnum_
+      { coerce `VR_IVRSystem_FnTable'
+      , castPtr `Ptr VR_IVRSystem_FnTable'
+      , `EVREventType'} -> `String' #}
+
 --TODO: virtual HiddenAreaMesh_t GetHiddenAreaMesh( EVREye eEye, EHiddenAreaMeshType type = k_eHiddenAreaMesh_Standard ) = 0;
 --TODO: virtual bool GetControllerState( vr::TrackedDeviceIndex_t unControllerDeviceIndex, vr::VRControllerState_t *pControllerState, uint32_t unControllerStateSize ) = 0;
 --TODO: virtual bool GetControllerStateWithPose( ETrackingUniverseOrigin eOrigin, vr::TrackedDeviceIndex_t unControllerDeviceIndex, vr::VRControllerState_t *pControllerState, uint32_t unControllerStateSize, TrackedDevicePose_t *pTrackedDevicePose ) = 0;
---TODO: virtual void TriggerHapticPulse( vr::TrackedDeviceIndex_t unControllerDeviceIndex, uint32_t unAxisId, unsigned short usDurationMicroSec ) = 0;
---TODO: virtual const char *GetButtonIdNameFromEnum( EVRButtonId eButtonId ) = 0;
---TODO: virtual const char *GetControllerAxisTypeNameFromEnum( EVRControllerAxisType eAxisType ) = 0;
---TODO: virtual bool CaptureInputFocus() = 0;
---TODO: virtual void ReleaseInputFocus() = 0;
---TODO: virtual bool IsInputFocusCapturedByAnotherProcess() = 0;
---TODO: virtual uint32_t DriverDebugRequest( vr::TrackedDeviceIndex_t unDeviceIndex, const char *pchRequest, char *pchResponseBuffer, uint32_t unResponseBufferSize ) = 0;
---TODO: virtual vr::EVRFirmwareError PerformFirmwareUpdate( vr::TrackedDeviceIndex_t unDeviceIndex ) = 0;
---TODO: virtual void AcknowledgeQuit_Exiting() = 0;
---TODO: virtual void AcknowledgeQuit_UserPrompt() = 0;
 
+-- virtual void TriggerHapticPulse( vr::TrackedDeviceIndex_t unControllerDeviceIndex, uint32_t unAxisId, unsigned short usDurationMicroSec ) = 0;
+{#fun VR_IVRSystem_FnTable->TriggerHapticPulse as ivrSystemTriggerHapticPulse_
+      { coerce `VR_IVRSystem_FnTable'
+      , castPtr `Ptr VR_IVRSystem_FnTable'
+      , `TrackedDeviceIndex'
+      , `CUInt'
+      , `CUShort'} -> `()' #}
+
+-- virtual const char *GetButtonIdNameFromEnum( EVRButtonId eButtonId ) = 0;
+{#fun VR_IVRSystem_FnTable->GetButtonIdNameFromEnum as ivrSystemGetButtonIdNameFromEnum_
+      { coerce `VR_IVRSystem_FnTable'
+      , castPtr `Ptr VR_IVRSystem_FnTable'
+      , `EVRButtonId'} -> `String' #}
+
+-- virtual const char *GetControllerAxisTypeNameFromEnum( EVRControllerAxisType eAxisType ) = 0;
+{#fun VR_IVRSystem_FnTable->GetControllerAxisTypeNameFromEnum as ivrSystemGetControllerAxisTypeNameFromEnum_
+      { coerce `VR_IVRSystem_FnTable'
+      , castPtr `Ptr VR_IVRSystem_FnTable'
+      , `EVRControllerAxisType'} -> `String' #}
+
+-- virtual bool CaptureInputFocus() = 0;
+{#fun VR_IVRSystem_FnTable->CaptureInputFocus as ivrSystemCaptureInputFocus_
+      { coerce `VR_IVRSystem_FnTable'
+      , castPtr `Ptr VR_IVRSystem_FnTable'} -> `Bool' #}
+
+-- virtual void ReleaseInputFocus() = 0;
+{#fun VR_IVRSystem_FnTable->ReleaseInputFocus as ivrSystemReleaseInputFocus_
+      { coerce `VR_IVRSystem_FnTable'
+      , castPtr `Ptr VR_IVRSystem_FnTable'} -> `()' #}
+
+-- virtual bool IsInputFocusCapturedByAnotherProcess() = 0;
+{#fun VR_IVRSystem_FnTable->IsInputFocusCapturedByAnotherProcess as ivrSystemIsInputFocusCapturedByAnotherProcess_
+      { coerce `VR_IVRSystem_FnTable'
+      , castPtr `Ptr VR_IVRSystem_FnTable'} -> `Bool' #}
+
+-- virtual uint32_t DriverDebugRequest( vr::TrackedDeviceIndex_t unDeviceIndex, const char *pchRequest, char *pchResponseBuffer, uint32_t unResponseBufferSize ) = 0;
+{#fun VR_IVRSystem_FnTable->DriverDebugRequest as ivrSystemDriverDebugRequest_
+      { coerce `VR_IVRSystem_FnTable'
+      , castPtr `Ptr VR_IVRSystem_FnTable'
+      , `TrackedDeviceIndex'
+      , `String'
+      , `String'
+      , `CUInt'} -> `CUInt' #}
+
+-- virtual vr::EVRFirmwareError PerformFirmwareUpdate( vr::TrackedDeviceIndex_t unDeviceIndex ) = 0;
+{#fun VR_IVRSystem_FnTable->PerformFirmwareUpdate as ivrSystemPerformFirmwareUpdate_
+      { coerce `VR_IVRSystem_FnTable'
+      , castPtr `Ptr VR_IVRSystem_FnTable'
+      , `TrackedDeviceIndex'} -> `EVRFirmwareError' #}
+
+-- virtual void AcknowledgeQuit_Exiting() = 0;
+{#fun VR_IVRSystem_FnTable->AcknowledgeQuit_Exiting as ivrSystemAcknowledgeQuit_Exiting_
+      { coerce `VR_IVRSystem_FnTable'
+      , castPtr `Ptr VR_IVRSystem_FnTable'} -> `()' #}
+
+-- virtual void AcknowledgeQuit_UserPrompt() = 0;
+{#fun VR_IVRSystem_FnTable->AcknowledgeQuit_UserPrompt as ivrSystemAcknowledgeQuit_UserPrompt_
+      { coerce `VR_IVRSystem_FnTable'
+      , castPtr `Ptr VR_IVRSystem_FnTable'} -> `()' #}
 
 -- IVRRenderModels
 
@@ -1112,17 +1223,34 @@ deriving instance Storable VR_IVRDriverManager_FnTable
       { coerce `VR_IVRRenderModels_FnTable'
       , castPtr `Ptr VR_IVRRenderModels_FnTable'
       , `RenderModel_TextureMapPtr' } -> `()' #}
---TODO: virtual EVRRenderModelError LoadTextureD3D11_Async( TextureID_t textureId, void *pD3D11Device, void **ppD3D11Texture2D ) = 0;
---TODO: virtual EVRRenderModelError LoadIntoTextureD3D11_Async( TextureID_t textureId, void *pDstTexture ) = 0;
---TODO: virtual void FreeTextureD3D11( void *pD3D11Texture2D ) = 0;
+
 --TODO: virtual uint32_t GetRenderModelName( uint32_t unRenderModelIndex, VR_OUT_STRING() char *pchRenderModelName, uint32_t unRenderModelNameLen ) = 0;
---TODO: virtual uint32_t GetRenderModelCount() = 0;
---TODO: virtual uint32_t GetComponentCount( const char *pchRenderModelName ) = 0;
+-- virtual uint32_t GetRenderModelCount() = 0;
+{#fun VR_IVRRenderModels_FnTable->GetRenderModelCount as ivrRenderModelsGetRenderModelCount_
+      { coerce `VR_IVRRenderModels_FnTable'
+      , castPtr `Ptr VR_IVRRenderModels_FnTable'} -> `CUInt' #}
+-- virtual uint32_t GetComponentCount( const char *pchRenderModelName ) = 0;
+{#fun VR_IVRRenderModels_FnTable->GetComponentCount as ivrRenderModelsGetComponentCount_
+      { coerce `VR_IVRRenderModels_FnTable'
+      , castPtr `Ptr VR_IVRRenderModels_FnTable'
+      , `String'} -> `CUInt' #}
 --TODO: virtual uint32_t GetComponentName( const char *pchRenderModelName, uint32_t unComponentIndex, VR_OUT_STRING( ) char *pchComponentName, uint32_t unComponentNameLen ) = 0;
 --TODO: virtual uint64_t GetComponentButtonMask( const char *pchRenderModelName, const char *pchComponentName ) = 0;
 --TODO: virtual uint32_t GetComponentRenderModelName( const char *pchRenderModelName, const char *pchComponentName, VR_OUT_STRING( ) char *pchComponentRenderModelName, uint32_t unComponentRenderModelNameLen ) = 0;
 --TODO: virtual bool GetComponentState( const char *pchRenderModelName, const char *pchComponentName, const vr::VRControllerState_t *pControllerState, const RenderModel_ControllerMode_State_t *pState, RenderModel_ComponentState_t *pComponentState ) = 0;
---TODO: virtual bool RenderModelHasComponent( const char *pchRenderModelName, const char *pchComponentName ) = 0;
+
+-- virtual bool RenderModelHasComponent( const char *pchRenderModelName, const char *pchComponentName ) = 0;
+{#fun VR_IVRRenderModels_FnTable->RenderModelHasComponent as ivrRenderModelsRenderModelHasComponent_
+      { coerce `VR_IVRRenderModels_FnTable'
+      , castPtr `Ptr VR_IVRRenderModels_FnTable'
+      , `String'
+      , `String'} -> `Bool' #}
+
 --TODO: virtual uint32_t GetRenderModelThumbnailURL( const char *pchRenderModelName, VR_OUT_STRING() char *pchThumbnailURL, uint32_t unThumbnailURLLen, vr::EVRRenderModelError *peError ) = 0;
 --TODO: virtual uint32_t GetRenderModelOriginalPath( const char *pchRenderModelName, VR_OUT_STRING() char *pchOriginalPath, uint32_t unOriginalPathLen, vr::EVRRenderModelError *peError ) = 0;
---TODO: virtual const char *GetRenderModelErrorNameFromEnum( vr::EVRRenderModelError error ) = 0;
+
+-- virtual const char *GetRenderModelErrorNameFromEnum( vr::EVRRenderModelError error ) = 0;
+{#fun VR_IVRRenderModels_FnTable->GetRenderModelErrorNameFromEnum as ivrRenderModelsGetRenderModelErrorNameFromEnum_
+      { coerce `VR_IVRRenderModels_FnTable'
+      , castPtr `Ptr VR_IVRRenderModels_FnTable'
+      , `EVRRenderModelError'} -> `String' #}
