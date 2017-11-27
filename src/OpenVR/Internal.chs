@@ -162,8 +162,12 @@ type PropertyTypeTag_t = {#type PropertyTypeTag_t#}
 --type VRInputOriginHandle_t = {#type VRInputOriginHandle_t#}
 --{#typedef VRInputOriginHandle_t VRInputOriginHandle_t#}
 
-{#pointer glSharedTextureHandle_t as GlSharedTextureHandle_t newtype#}
-deriving instance Eq GlSharedTextureHandle_t
+-- {#pointer glSharedTextureHandle_t as GlSharedTextureHandle_t newtype#}
+-- deriving instance Eq GlSharedTextureHandle_t
+--deriving instance Storable GlSharedTextureHandle_t
+
+type GlSharedTextureHandle = {#type glSharedTextureHandle_t#}
+-- {#typedef glSharedTextureHandle_t GlSharedTextureHandle#}
 
 type GlInt_t = {#type glInt_t#}
 {#typedef glInt_t GlInt_t#}
@@ -239,9 +243,7 @@ deriving instance Storable HmdVector2_t
 deriving instance Eq HmdQuaternion_t
 deriving instance Storable HmdQuaternion_t
 
-{#pointer *HmdColor_t as HmdColor_t newtype#}
-deriving instance Eq HmdColor_t
-deriving instance Storable HmdColor_t
+{#pointer *HmdColor_t as HmdColorPtr -> V4 Float #}
 
 {#pointer *HmdQuad_t as HmdQuad_t newtype#}
 deriving instance Eq HmdQuad_t
@@ -274,6 +276,60 @@ instance Storable OVRTexture where
     {#set Texture_t->eType#} ptr (cFromEnum ty)
     {#set Texture_t->eColorSpace#} ptr (cFromEnum csp)
 
+{#pointer *Compositor_CumulativeStats as Compositor_CumulativeStatsPtr -> OVRCompositor_CumulativeStats #}
+
+data OVRCompositor_CumulativeStats = OVRCompositor_CumulativeStats {
+    compositorStatsPid                           :: CUInt
+  , compositorStatsNumFramePresents              :: CUInt
+  , compositorStatsNumDroppedFrames              :: CUInt
+  , compositorStatsNumReprojectedFrames          :: CUInt
+  , compositorStatsNumFramePresentsOnStartup     :: CUInt
+  , compositorStatsNumDroppedFramesOnStartup     :: CUInt
+  , compositorStatsNumReprojectedFramesOnStartup :: CUInt
+  , compositorStatsNumLoading                    :: CUInt
+  , compositorStatsNumFramePresentsLoading       :: CUInt
+  , compositorStatsNumDroppedFramesLoading       :: CUInt
+  , compositorStatsNumReprojectedFramesLoading   :: CUInt
+  , compositorStatsNumTimedOut                   :: CUInt
+  , compositorStatsNumFramePresentsTimedOut      :: CUInt
+  , compositorStatsNumDroppedFramesTimedOut      :: CUInt
+  , compositorStatsNumReprojectedFramesTimedOut  :: CUInt
+}
+
+instance Storable OVRCompositor_CumulativeStats where
+  sizeOf _    = {#sizeof Compositor_CumulativeStats#}
+  alignment _ = {#alignof Compositor_CumulativeStats#}
+  peek ptr =  OVRCompositor_CumulativeStats <$> ({#get Compositor_CumulativeStats->m_nPid#}                           ptr)
+                                            <*> ({#get Compositor_CumulativeStats->m_nNumFramePresents#}              ptr)
+                                            <*> ({#get Compositor_CumulativeStats->m_nNumDroppedFrames#}              ptr)
+                                            <*> ({#get Compositor_CumulativeStats->m_nNumReprojectedFrames#}          ptr)
+                                            <*> ({#get Compositor_CumulativeStats->m_nNumFramePresentsOnStartup#}     ptr)
+                                            <*> ({#get Compositor_CumulativeStats->m_nNumDroppedFramesOnStartup#}     ptr)
+                                            <*> ({#get Compositor_CumulativeStats->m_nNumReprojectedFramesOnStartup#} ptr)
+                                            <*> ({#get Compositor_CumulativeStats->m_nNumLoading#}                    ptr)
+                                            <*> ({#get Compositor_CumulativeStats->m_nNumFramePresentsLoading#}       ptr)
+                                            <*> ({#get Compositor_CumulativeStats->m_nNumDroppedFramesLoading#}       ptr)
+                                            <*> ({#get Compositor_CumulativeStats->m_nNumReprojectedFramesLoading#}   ptr)
+                                            <*> ({#get Compositor_CumulativeStats->m_nNumTimedOut#}                   ptr)
+                                            <*> ({#get Compositor_CumulativeStats->m_nNumFramePresentsTimedOut#}      ptr)
+                                            <*> ({#get Compositor_CumulativeStats->m_nNumDroppedFramesTimedOut#}      ptr)
+                                            <*> ({#get Compositor_CumulativeStats->m_nNumReprojectedFramesTimedOut#}  ptr)
+  poke ptr ovrCompositor_CumulativeStats = do
+    {#set Compositor_CumulativeStats->m_nPid#}                           ptr (compositorStatsPid                           ovrCompositor_CumulativeStats)
+    {#set Compositor_CumulativeStats->m_nNumFramePresents#}              ptr (compositorStatsNumFramePresents              ovrCompositor_CumulativeStats)
+    {#set Compositor_CumulativeStats->m_nNumDroppedFrames#}              ptr (compositorStatsNumDroppedFrames              ovrCompositor_CumulativeStats)
+    {#set Compositor_CumulativeStats->m_nNumReprojectedFrames#}          ptr (compositorStatsNumReprojectedFrames          ovrCompositor_CumulativeStats)
+    {#set Compositor_CumulativeStats->m_nNumFramePresentsOnStartup#}     ptr (compositorStatsNumFramePresentsOnStartup     ovrCompositor_CumulativeStats)
+    {#set Compositor_CumulativeStats->m_nNumDroppedFramesOnStartup#}     ptr (compositorStatsNumDroppedFramesOnStartup     ovrCompositor_CumulativeStats)
+    {#set Compositor_CumulativeStats->m_nNumReprojectedFramesOnStartup#} ptr (compositorStatsNumReprojectedFramesOnStartup ovrCompositor_CumulativeStats)
+    {#set Compositor_CumulativeStats->m_nNumLoading#}                    ptr (compositorStatsNumLoading                    ovrCompositor_CumulativeStats)
+    {#set Compositor_CumulativeStats->m_nNumFramePresentsLoading#}       ptr (compositorStatsNumFramePresentsLoading       ovrCompositor_CumulativeStats)
+    {#set Compositor_CumulativeStats->m_nNumDroppedFramesLoading#}       ptr (compositorStatsNumDroppedFramesLoading       ovrCompositor_CumulativeStats)
+    {#set Compositor_CumulativeStats->m_nNumReprojectedFramesLoading#}   ptr (compositorStatsNumReprojectedFramesLoading   ovrCompositor_CumulativeStats)
+    {#set Compositor_CumulativeStats->m_nNumTimedOut#}                   ptr (compositorStatsNumTimedOut                   ovrCompositor_CumulativeStats)
+    {#set Compositor_CumulativeStats->m_nNumFramePresentsTimedOut#}      ptr (compositorStatsNumFramePresentsTimedOut      ovrCompositor_CumulativeStats)
+    {#set Compositor_CumulativeStats->m_nNumDroppedFramesTimedOut#}      ptr (compositorStatsNumDroppedFramesTimedOut      ovrCompositor_CumulativeStats)
+    {#set Compositor_CumulativeStats->m_nNumReprojectedFramesTimedOut#}  ptr (compositorStatsNumReprojectedFramesTimedOut  ovrCompositor_CumulativeStats)
 
 {#pointer *TrackedDevicePose_t as TrackedDevicePosePtr -> TrackedDevicePose#}
 
@@ -352,9 +408,6 @@ instance Storable VRVulkanTextureData where
     {#set VRVulkanTextureData_t->m_nHeight #} ptr (fromIntegral h)
     {#set VRVulkanTextureData_t->m_nFormat #} ptr (fromIntegral fmt)
     {#set VRVulkanTextureData_t->m_nSampleCount #} ptr (fromIntegral smp)
-
-
-
 
 {#pointer *D3D12TextureData_t as D3D12TextureData_t newtype#}
 deriving instance Eq D3D12TextureData_t
@@ -464,9 +517,9 @@ deriving instance Storable AppOverrideKeys_t
 deriving instance Eq Compositor_FrameTiming
 deriving instance Storable Compositor_FrameTiming
 
-{#pointer *Compositor_CumulativeStats as Compositor_CumulativeStats newtype#}
-deriving instance Eq Compositor_CumulativeStats
-deriving instance Storable Compositor_CumulativeStats
+-- {#pointer *Compositor_CumulativeStats as Compositor_CumulativeStats newtype#}
+-- deriving instance Eq Compositor_CumulativeStats
+-- deriving instance Storable Compositor_CumulativeStats
 
 {#pointer *VROverlayIntersectionParams_t as VROverlayIntersectionParams_t newtype#}
 deriving instance Eq VROverlayIntersectionParams_t
@@ -728,7 +781,7 @@ deriving instance Storable VR_IVRDriverManager_FnTable
       , castPtr `Ptr VR_IVRCompositor_FnTable'
       , id `Ptr ()'
       , id `Ptr CChar'
-, `Int'} -> `Int'#}
+      , `Int'} -> `Int'#}
 
 -- virtual void SetTrackingSpace( ETrackingUniverseOrigin eOrigin ) = 0;
 {#fun VR_IVRCompositor_FnTable->SetTrackingSpace as ivrCompositorSetTrackignSpace_
@@ -743,7 +796,7 @@ deriving instance Storable VR_IVRDriverManager_FnTable
 
 --TODO: VR_ARRAY_COUNT(unGamePoseArrayCount) TrackedDevicePose_t* pGamePoseArray, uint32_t unGamePoseArrayCount ) = 0;
 --TODO: virtual EVRCompositorError GetLastPoses( VR_ARRAY_COUNT( unRenderPoseArrayCount ) TrackedDevicePose_t* pRenderPoseArray, uint32_t unRenderPoseArrayCount,
--- TODO: VR_ARRAY_COUNT( unGamePoseArrayCount ) TrackedDevicePose_t* pGamePoseArray, uint32_t unGamePoseArrayCount ) = 0;
+--TODO: VR_ARRAY_COUNT( unGamePoseArrayCount ) TrackedDevicePose_t* pGamePoseArray, uint32_t unGamePoseArrayCount ) = 0;
 
 -- virtual EVRCompositorError GetLastPoseForTrackedDeviceIndex( TrackedDeviceIndex_t unDeviceIndex, TrackedDevicePose_t *pOutputPose, TrackedDevicePose_t *pOutputGamePose ) = 0;
 {#fun VR_IVRCompositor_FnTable->GetLastPoseForTrackedDeviceIndex as ivrCompositorGetLastPoseForTrackedDeviceIndex_
@@ -763,17 +816,58 @@ deriving instance Storable VR_IVRDriverManager_FnTable
       { coerce `VR_IVRCompositor_FnTable'
       , castPtr `Ptr VR_IVRCompositor_FnTable'} -> `()' #}
 
---TODO: virtual bool GetFrameTiming( Compositor_FrameTiming *pTiming, uint32_t unFramesAgo = 0 ) = 0;
---TODO: virtual uint32_t GetFrameTimings( Compositor_FrameTiming *pTiming, uint32_t nFrames ) = 0;
+--virtual bool GetFrameTiming( Compositor_FrameTiming *pTiming, uint32_t unFramesAgo = 0 ) = 0;
+{#fun VR_IVRCompositor_FnTable->GetFrameTiming as ivrCompositorGetFrameTiming_
+      { coerce `VR_IVRCompositor_FnTable'
+      , castPtr `Ptr VR_IVRCompositor_FnTable'
+      , `Compositor_FrameTiming'
+      , `CUInt'} -> `Bool' #}
+
+-- virtual uint32_t GetFrameTimings( Compositor_FrameTiming *pTiming, uint32_t nFrames ) = 0;
+{#fun VR_IVRCompositor_FnTable->GetFrameTimings as ivrCompositorGetFrameTimings_
+      { coerce `VR_IVRCompositor_FnTable'
+      , castPtr `Ptr VR_IVRCompositor_FnTable'
+      , `Compositor_FrameTiming' -- TODO: Give caller a way to retrieve [Compositor_FrameTiming]
+      , `CUInt'} -> `Bool' #}
+
+
 --virtual float GetFrameTimeRemaining() = 0;
 {#fun VR_IVRCompositor_FnTable->GetFrameTimeRemaining as ivrCompositorGetFrameTimeRemaining_
       { coerce `VR_IVRCompositor_FnTable'
       , castPtr `Ptr VR_IVRCompositor_FnTable'} -> `()' #}
 
---TODO: virtual void GetCumulativeStats( Compositor_CumulativeStats *pStats, uint32_t nStatsSizeInBytes ) = 0;
---TODO: virtual void FadeToColor( float fSeconds, float fRed, float fGreen, float fBlue, float fAlpha, bool bBackground = false ) = 0;
---TODO: virtual HmdColor_t GetCurrentFadeColor( bool bBackground = false ) = 0;
---TODO: virtual void FadeGrid( float fSeconds, bool bFadeIn ) = 0;
+--{#pointer *Compositor_CumulativeStats as Compositor_CumulativeStatsPtr -> OVRCompositor_CumulativeStats #}
+--QWERTY: virtual void GetCumulativeStats( Compositor_CumulativeStats *pStats, uint32_t nStatsSizeInBytes ) = 0;
+{#fun VR_IVRCompositor_FnTable->GetCumulativeStats as ivrCompositorGetCumulativeStats_
+      { coerce `VR_IVRCompositor_FnTable'
+      , castPtr `Ptr VR_IVRCompositor_FnTable'
+      , alloca- `OVRCompositor_CumulativeStats' peek*
+      , `CUInt'} -> `()' #}
+
+-- virtual void FadeToColor( float fSeconds, float fRed, float fGreen, float fBlue, float fAlpha, bool bBackground = false ) = 0;
+{#fun VR_IVRCompositor_FnTable->FadeToColor as ivrCompositorFadeToColor_
+      { coerce `VR_IVRCompositor_FnTable'
+      , castPtr `Ptr VR_IVRCompositor_FnTable'
+      , `Float'
+      , `Float'
+      , `Float'
+      , `Float'
+      , `Float'
+      , `Bool'} -> `()' #}
+
+--virtual HmdColor_t GetCurrentFadeColor( bool bBackground = false ) = 0;
+{#fun VR_IVRCompositor_GetCurrentFadeColor as ivrCompositorGetCurrentFadeColor_
+      { coerce `VR_IVRCompositor_FnTable'
+      , castPtr `Ptr VR_IVRCompositor_FnTable'
+      , `Bool'
+      , alloca- `V4 Float' peek* } -> `()' #}
+
+--virtual void FadeGrid( float fSeconds, bool bFadeIn ) = 0;
+{#fun VR_IVRCompositor_FnTable->FadeGrid as ivrCompositorFadeGrid_
+      { coerce `VR_IVRCompositor_FnTable'
+      , castPtr `Ptr VR_IVRCompositor_FnTable'
+      , `Float'
+      , `Bool'} -> `()' #}
 
 --virtual float GetCurrentGridAlpha() = 0;
 {#fun VR_IVRCompositor_FnTable->GetCurrentGridAlpha as ivrCompositorGetCurrentGridAlpha_
@@ -847,37 +941,70 @@ deriving instance Storable VR_IVRDriverManager_FnTable
       { coerce `VR_IVRCompositor_FnTable'
       , castPtr `Ptr VR_IVRCompositor_FnTable'} -> `()' #}
 
---TODO: virtual void ForceInterleavedReprojectionOn( bool bOverride ) = 0;
---virtual void ForceReconnectProcess() = 0;
+-- virtual void ForceInterleavedReprojectionOn( bool bOverride ) = 0;
+{#fun VR_IVRCompositor_FnTable->ForceInterleavedReprojectionOn as ivrCompositorForceInterleavedReprojectionOn_
+      { coerce `VR_IVRCompositor_FnTable'
+      , castPtr `Ptr VR_IVRCompositor_FnTable'
+      , `Bool' } -> `()' #}
+
+-- virtual void ForceReconnectProcess() = 0;
 {#fun VR_IVRCompositor_FnTable->ForceReconnectProcess as ivrCompositorForceReconnectProcess_
       { coerce `VR_IVRCompositor_FnTable'
       , castPtr `Ptr VR_IVRCompositor_FnTable'} -> `()' #}
 
---TODO: virtual void SuspendRendering( bool bSuspend ) = 0;
---TODO: virtual vr::EVRCompositorError GetMirrorTextureD3D11( vr::EVREye eEye, void *pD3D11DeviceOrResource, void **ppD3D11ShaderResourceView ) = 0;
---TODO: virtual void ReleaseMirrorTextureD3D11( void *pD3D11ShaderResourceView ) = 0;
---TODO: virtual vr::EVRCompositorError GetMirrorTextureGL( vr::EVREye eEye, vr::glUInt_t *pglTextureId, vr::glSharedTextureHandle_t *pglSharedTextureHandle ) = 0;
+-- virtual void SuspendRendering( bool bSuspend ) = 0;
+{#fun VR_IVRCompositor_FnTable->SuspendRendering as ivrCompositorSuspendRendering_
+      { coerce `VR_IVRCompositor_FnTable'
+      , castPtr `Ptr VR_IVRCompositor_FnTable'
+      , `Bool' } -> `()' #}
+
+-- virtual vr::EVRCompositorError GetMirrorTextureGL( vr::EVREye eEye, vr::glUInt_t *pglTextureId, vr::glSharedTextureHandle_t *pglSharedTextureHandle ) = 0;
+{#fun VR_IVRCompositor_FnTable->GetMirrorTextureGL as ivrCompositorGetMirrorTextureGL_
+      { coerce `VR_IVRCompositor_FnTable'
+      , castPtr `Ptr VR_IVRCompositor_FnTable'
+      , `EVREye'
+      , id `Ptr GlUInt_t'
+      , alloca- `GlSharedTextureHandle' peek* } -> `EVRCompositorError' #}
+
 --TODO: virtual bool ReleaseSharedGLTexture( vr::glUInt_t glTextureId, vr::glSharedTextureHandle_t glSharedTextureHandle ) = 0;
---TODO: virtual void LockGLSharedTextureForAccess( vr::glSharedTextureHandle_t glSharedTextureHandle ) = 0;
---TODO: virtual void UnlockGLSharedTextureForAccess( vr::glSharedTextureHandle_t glSharedTextureHandle ) = 0;
---TODO: virtual void SetExplicitTimingMode( bool bExplicitTimingMode ) = 0;
---TODO: virtual EVRCompositorError SubmitExplicitTimingData() = 0;
+-- {#fun VR_IVRCompositor_FnTable->ReleaseSharedGLTexture as ivrCompositorReleaseSharedGLTexture_
+--       { coerce `VR_IVRCompositor_FnTable'
+--       , castPtr `Ptr VR_IVRCompositor_FnTable'
+--       , `GlUInt_t'
+--       , alloca- `GlSharedTextureHandle' peek* } -> `()' #}
+
+-- TODO: virtual void LockGLSharedTextureForAccess( vr::glSharedTextureHandle_t glSharedTextureHandle ) = 0;
+-- {#fun VR_IVRCompositor_FnTable->LockGLSharedTextureForAccess as ivrCompositorLockSharedTextureForAccess_
+--       { coerce `VR_IVRCompositor_FnTable'
+--       , castPtr `Ptr VR_IVRCompositor_FnTable'
+--       , id `GlSharedTextureHandle_t' } -> `()' #}
+
+-- TODO: virtual void UnlockGLSharedTextureForAccess( vr::glSharedTextureHandle_t glSharedTextureHandle ) = 0;
+-- {#fun VR_IVRCompositor_FnTable->UnlockGLSharedTextureForAccess as ivrCompositorUnlockGLSharedTextureForAccess_
+--       { coerce `VR_IVRCompositor_FnTable'
+--       , castPtr `Ptr VR_IVRCompositor_FnTable'
+--       , id `GlSharedTextureHandle_t' } -> `()' #}
+
+-- virtual void SetExplicitTimingMode( bool bExplicitTimingMode ) = 0;
+{#fun VR_IVRCompositor_FnTable->SetExplicitTimingMode as ivrCompositorSetExplicitTimingMode_
+      { coerce `VR_IVRCompositor_FnTable'
+      , castPtr `Ptr VR_IVRCompositor_FnTable'
+      , `Bool' } -> `()' #}
+
+-- virtual EVRCompositorError SubmitExplicitTimingData() = 0;
+{#fun VR_IVRCompositor_FnTable->SubmitExplicitTimingData as ivrCompositorSubmitExplicitTimingData_
+      { coerce `VR_IVRCompositor_FnTable'
+      , castPtr `Ptr VR_IVRCompositor_FnTable'} -> `EVRCompositorError' #}
 
 -- IVRSystem
-
-{#fun VR_IVRSystem_FnTable->GetOutputDevice as ivrSystemGetOutputDevice_
-      { coerce `VR_IVRSystem_FnTable'
-      , castPtr `Ptr VR_IVRSystem_FnTable'
-      , alloca- `CULong' peek*
-      , `ETextureType'
-      , id `Ptr ()'} -> `()'#}
-
+--virtual void GetRecommendedRenderTargetSize( uint32_t *pnWidth, uint32_t *pnHeight ) = 0;
 {#fun VR_IVRSystem_FnTable->GetRecommendedRenderTargetSize as ivrSystemGetRecommendedRenderTargetSize_
       { coerce `VR_IVRSystem_FnTable'
       , castPtr `Ptr VR_IVRSystem_FnTable'
       , alloca- `CUInt' peek*
       , alloca- `CUInt' peek* } -> `()'#}
 
+--virtual HmdMatrix44_t GetProjectionMatrix( EVREye eEye, float fNearZ, float fFarZ ) = 0;
 {#fun VR_IVRSystem_GetProjectionMatrix as ivrSystemGetProjectionMatrix_
       { coerce `VR_IVRSystem_FnTable'
       , castPtr `Ptr VR_IVRSystem_FnTable'
@@ -886,19 +1013,45 @@ deriving instance Storable VR_IVRDriverManager_FnTable
       , `Float'
       , alloca- `M44 Float' peek* } -> `()' #}
 
+--TODO: virtual void GetProjectionRaw( EVREye eEye, float *pfLeft, float *pfRight, float *pfTop, float *pfBottom ) = 0;
+--TODO: virtual bool ComputeDistortion( EVREye eEye, float fU, float fV, DistortionCoordinates_t *pDistortionCoordinates ) = 0;
+--TODO: virtual HmdMatrix34_t GetEyeToHeadTransform( EVREye eEye ) = 0;
 {#fun VR_IVRSystem_GetEyeToHeadTransform as ivrSystemGetEyeToHeadTransform_
       { coerce `VR_IVRSystem_FnTable'
       , castPtr `Ptr VR_IVRSystem_FnTable'
       , `EVREye'
       , alloca- `M34 Float' peek* } -> `()' #}
 
--- i'm sure there's a better way to pass sizeof of a struct
-{#fun VR_IVRSystem_FnTable->PollNextEvent as ivrSystemPollNextEvent_
+--TODO: virtual bool GetTimeSinceLastVsync( float *pfSecondsSinceLastVsync, uint64_t *pulFrameCounter ) = 0;
+--TODO: virtual int32_t GetD3D9AdapterIndex() = 0;
+--TODO: virtual void GetDXGIOutputInfo( int32_t *pnAdapterIndex ) = 0;
+--TODO: virtual void GetOutputDevice( uint64_t *pnDevice, ETextureType textureType, VkInstance_T *pInstance = nullptr ) = 0;
+{#fun VR_IVRSystem_FnTable->GetOutputDevice as ivrSystemGetOutputDevice_
       { coerce `VR_IVRSystem_FnTable'
       , castPtr `Ptr VR_IVRSystem_FnTable'
-      , `VREventPtr' -- we cannot peek this if this returns False
-      , `Int' } -> `Bool' #}
+      , alloca- `CULong' peek*
+      , `ETextureType'
+      , id `Ptr ()'} -> `()'#}
 
+--TODO: virtual bool IsDisplayOnDesktop() = 0;
+--TODO: virtual bool SetDisplayVisibility( bool bIsVisibleOnDesktop ) = 0;
+--TODO: virtual void GetDeviceToAbsoluteTrackingPose( ETrackingUniverseOrigin eOrigin, float fPredictedSecondsToPhotonsFromNow, VR_ARRAY_COUNT(unTrackedDevicePoseArrayCount) TrackedDevicePose_t *pTrackedDevicePoseArray, uint32_t unTrackedDevicePoseArrayCount ) = 0;
+--TODO: virtual void ResetSeatedZeroPose() = 0;
+--TODO: virtual HmdMatrix34_t GetSeatedZeroPoseToStandingAbsoluteTrackingPose() = 0;
+--TODO: virtual HmdMatrix34_t GetRawZeroPoseToStandingAbsoluteTrackingPose() = 0;
+--TODO: virtual uint32_t GetSortedTrackedDeviceIndicesOfClass( ETrackedDeviceClass eTrackedDeviceClass, VR_ARRAY_COUNT(unTrackedDeviceIndexArrayCount) vr::TrackedDeviceIndex_t *punTrackedDeviceIndexArray, uint32_t unTrackedDeviceIndexArrayCount, vr::TrackedDeviceIndex_t unRelativeToTrackedDeviceIndex = k_unTrackedDeviceIndex_Hmd ) = 0;
+--TODO: virtual EDeviceActivityLevel GetTrackedDeviceActivityLevel( vr::TrackedDeviceIndex_t unDeviceId ) = 0;
+--TODO: virtual void ApplyTransform( TrackedDevicePose_t *pOutputPose, const TrackedDevicePose_t *pTrackedDevicePose, const HmdMatrix34_t *pTransform ) = 0;
+--TODO: virtual vr::TrackedDeviceIndex_t GetTrackedDeviceIndexForControllerRole( vr::ETrackedControllerRole unDeviceType ) = 0;
+--TODO: virtual vr::ETrackedControllerRole GetControllerRoleForTrackedDeviceIndex( vr::TrackedDeviceIndex_t unDeviceIndex ) = 0;
+--TODO: virtual ETrackedDeviceClass GetTrackedDeviceClass( vr::TrackedDeviceIndex_t unDeviceIndex ) = 0;
+--TODO: virtual bool IsTrackedDeviceConnected( vr::TrackedDeviceIndex_t unDeviceIndex ) = 0;
+--TODO: virtual bool GetBoolTrackedDeviceProperty( vr::TrackedDeviceIndex_t unDeviceIndex, ETrackedDeviceProperty prop, ETrackedPropertyError *pError = 0L ) = 0;
+--TODO: virtual float GetFloatTrackedDeviceProperty( vr::TrackedDeviceIndex_t unDeviceIndex, ETrackedDeviceProperty prop, ETrackedPropertyError *pError = 0L ) = 0;
+--TODO: virtual int32_t GetInt32TrackedDeviceProperty( vr::TrackedDeviceIndex_t unDeviceIndex, ETrackedDeviceProperty prop, ETrackedPropertyError *pError = 0L ) = 0;
+--TODO: virtual uint64_t GetUint64TrackedDeviceProperty( vr::TrackedDeviceIndex_t unDeviceIndex, ETrackedDeviceProperty prop, ETrackedPropertyError *pError = 0L ) = 0;
+--TODO: virtual HmdMatrix34_t GetMatrix34TrackedDeviceProperty( vr::TrackedDeviceIndex_t unDeviceIndex, ETrackedDeviceProperty prop, ETrackedPropertyError *pError = 0L ) = 0;
+-- virtual uint32_t GetStringTrackedDeviceProperty( vr::TrackedDeviceIndex_t unDeviceIndex, ETrackedDeviceProperty prop, VR_OUT_STRING() char *pchValue, uint32_t unBufferSize, ETrackedPropertyError *pError = 0L ) = 0;
 {#fun VR_IVRSystem_FnTable->GetStringTrackedDeviceProperty as ivrSystemGetStringTrackedDeviceProperty_
       { coerce `VR_IVRSystem_FnTable'
       , castPtr `Ptr VR_IVRSystem_FnTable'
@@ -907,29 +1060,69 @@ deriving instance Storable VR_IVRDriverManager_FnTable
       , id `Ptr CChar'
       , `Int'
       , alloca- `ETrackedPropertyError' peekEnum* } -> `Int' #}
+--TODO: virtual const char *GetPropErrorNameFromEnum( ETrackedPropertyError error ) = 0;
+-- virtual bool PollNextEvent( VREvent_t *pEvent, uint32_t uncbVREvent ) = 0;
+-- i'm sure there's a better way to pass sizeof of a struct
+{#fun VR_IVRSystem_FnTable->PollNextEvent as ivrSystemPollNextEvent_
+      { coerce `VR_IVRSystem_FnTable'
+      , castPtr `Ptr VR_IVRSystem_FnTable'
+      , `VREventPtr' -- we cannot peek this if this returns False
+      , `Int' } -> `Bool' #}
+
+--TODO: virtual bool PollNextEventWithPose( ETrackingUniverseOrigin eOrigin, VREvent_t *pEvent, uint32_t uncbVREvent, vr::TrackedDevicePose_t *pTrackedDevicePose ) = 0;
+--TODO: virtual const char *GetEventTypeNameFromEnum( EVREventType eType ) = 0;
+--TODO: virtual HiddenAreaMesh_t GetHiddenAreaMesh( EVREye eEye, EHiddenAreaMeshType type = k_eHiddenAreaMesh_Standard ) = 0;
+--TODO: virtual bool GetControllerState( vr::TrackedDeviceIndex_t unControllerDeviceIndex, vr::VRControllerState_t *pControllerState, uint32_t unControllerStateSize ) = 0;
+--TODO: virtual bool GetControllerStateWithPose( ETrackingUniverseOrigin eOrigin, vr::TrackedDeviceIndex_t unControllerDeviceIndex, vr::VRControllerState_t *pControllerState, uint32_t unControllerStateSize, TrackedDevicePose_t *pTrackedDevicePose ) = 0;
+--TODO: virtual void TriggerHapticPulse( vr::TrackedDeviceIndex_t unControllerDeviceIndex, uint32_t unAxisId, unsigned short usDurationMicroSec ) = 0;
+--TODO: virtual const char *GetButtonIdNameFromEnum( EVRButtonId eButtonId ) = 0;
+--TODO: virtual const char *GetControllerAxisTypeNameFromEnum( EVRControllerAxisType eAxisType ) = 0;
+--TODO: virtual bool CaptureInputFocus() = 0;
+--TODO: virtual void ReleaseInputFocus() = 0;
+--TODO: virtual bool IsInputFocusCapturedByAnotherProcess() = 0;
+--TODO: virtual uint32_t DriverDebugRequest( vr::TrackedDeviceIndex_t unDeviceIndex, const char *pchRequest, char *pchResponseBuffer, uint32_t unResponseBufferSize ) = 0;
+--TODO: virtual vr::EVRFirmwareError PerformFirmwareUpdate( vr::TrackedDeviceIndex_t unDeviceIndex ) = 0;
+--TODO: virtual void AcknowledgeQuit_Exiting() = 0;
+--TODO: virtual void AcknowledgeQuit_UserPrompt() = 0;
+
 
 -- IVRRenderModels
 
 -- handle freeing gracefully
+
+--virtual EVRRenderModelError LoadRenderModel_Async( const char *pchRenderModelName, RenderModel_t **ppRenderModel ) = 0;
 {#fun VR_IVRRenderModels_FnTable->LoadRenderModel_Async as ivrRenderModelsLoadRenderModel_Async_
       { coerce `VR_IVRRenderModels_FnTable'
       , castPtr `Ptr VR_IVRRenderModels_FnTable'
       , `String'
       , alloca- `RenderModelPtr' peek* } -> `EVRRenderModelError' #}
-
+--virtual void FreeRenderModel( RenderModel_t *pRenderModel ) = 0;
+{#fun VR_IVRRenderModels_FnTable->FreeRenderModel as ivrRenderModelsFreeRenderModel_
+      { coerce `VR_IVRRenderModels_FnTable'
+      , castPtr `Ptr VR_IVRRenderModels_FnTable'
+      , `RenderModelPtr' } -> `()' #}
+--virtual EVRRenderModelError LoadTexture_Async( TextureID_t textureId, RenderModel_TextureMap_t **ppTexture ) = 0;
 {#fun VR_IVRRenderModels_FnTable->LoadTexture_Async as ivrRenderModelsLoadTexture_Async_
       { coerce `VR_IVRRenderModels_FnTable'
       , castPtr `Ptr VR_IVRRenderModels_FnTable'
       , `TextureID'
       , alloca- `RenderModel_TextureMapPtr' peek* } -> `EVRRenderModelError' #}
-
-{#fun VR_IVRRenderModels_FnTable->FreeRenderModel as ivrRenderModelsFreeRenderModel_
-      { coerce `VR_IVRRenderModels_FnTable'
-      , castPtr `Ptr VR_IVRRenderModels_FnTable'
-      , `RenderModelPtr' } -> `()' #}
-
+--virtual void FreeTexture( RenderModel_TextureMap_t *pTexture ) = 0;
 {#fun VR_IVRRenderModels_FnTable->FreeTexture as ivrRenderModelsFreeTexture_
       { coerce `VR_IVRRenderModels_FnTable'
       , castPtr `Ptr VR_IVRRenderModels_FnTable'
       , `RenderModel_TextureMapPtr' } -> `()' #}
-
+--TODO: virtual EVRRenderModelError LoadTextureD3D11_Async( TextureID_t textureId, void *pD3D11Device, void **ppD3D11Texture2D ) = 0;
+--TODO: virtual EVRRenderModelError LoadIntoTextureD3D11_Async( TextureID_t textureId, void *pDstTexture ) = 0;
+--TODO: virtual void FreeTextureD3D11( void *pD3D11Texture2D ) = 0;
+--TODO: virtual uint32_t GetRenderModelName( uint32_t unRenderModelIndex, VR_OUT_STRING() char *pchRenderModelName, uint32_t unRenderModelNameLen ) = 0;
+--TODO: virtual uint32_t GetRenderModelCount() = 0;
+--TODO: virtual uint32_t GetComponentCount( const char *pchRenderModelName ) = 0;
+--TODO: virtual uint32_t GetComponentName( const char *pchRenderModelName, uint32_t unComponentIndex, VR_OUT_STRING( ) char *pchComponentName, uint32_t unComponentNameLen ) = 0;
+--TODO: virtual uint64_t GetComponentButtonMask( const char *pchRenderModelName, const char *pchComponentName ) = 0;
+--TODO: virtual uint32_t GetComponentRenderModelName( const char *pchRenderModelName, const char *pchComponentName, VR_OUT_STRING( ) char *pchComponentRenderModelName, uint32_t unComponentRenderModelNameLen ) = 0;
+--TODO: virtual bool GetComponentState( const char *pchRenderModelName, const char *pchComponentName, const vr::VRControllerState_t *pControllerState, const RenderModel_ControllerMode_State_t *pState, RenderModel_ComponentState_t *pComponentState ) = 0;
+--TODO: virtual bool RenderModelHasComponent( const char *pchRenderModelName, const char *pchComponentName ) = 0;
+--TODO: virtual uint32_t GetRenderModelThumbnailURL( const char *pchRenderModelName, VR_OUT_STRING() char *pchThumbnailURL, uint32_t unThumbnailURLLen, vr::EVRRenderModelError *peError ) = 0;
+--TODO: virtual uint32_t GetRenderModelOriginalPath( const char *pchRenderModelName, VR_OUT_STRING() char *pchOriginalPath, uint32_t unOriginalPathLen, vr::EVRRenderModelError *peError ) = 0;
+--TODO: virtual const char *GetRenderModelErrorNameFromEnum( vr::EVRRenderModelError error ) = 0;

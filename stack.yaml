@@ -67,5 +67,5 @@ extra-package-dbs: []
 #
 
 nix:
-  enable:     false     # we leave nix off by default; users must pass `stack --nix ...` to use it
+  enable:     true     # we leave nix off by default; users must pass `stack --nix ...` to use it
   shell-file: shell.nix 
