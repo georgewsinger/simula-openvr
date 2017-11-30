@@ -767,6 +767,11 @@ deriving instance Storable VR_IVRDriverManager_FnTable
       , `Int'
       , alloca- `ETrackedPropertyError' peekEnum* } -> `Int' #}
 
+{#fun VR_IVRSystem_FnTable->GetTrackedDeviceClass as ivrSystemGetTrackedDeviceClass_
+      { coerce `VR_IVRSystem_FnTable'
+      , castPtr `Ptr VR_IVRSystem_FnTable'
+      , `TrackedDeviceIndex' } -> `ETrackedDeviceClass' #}
+
 {#fun VR_IVRSystem_FnTable->IsTrackedDeviceConnected as ivrSystemIsTrackedDeviceConnected_
       { coerce `VR_IVRSystem_FnTable'
       , castPtr `Ptr VR_IVRSystem_FnTable'
@@ -794,5 +799,3 @@ deriving instance Storable VR_IVRDriverManager_FnTable
       { coerce `VR_IVRRenderModels_FnTable'
       , castPtr `Ptr VR_IVRRenderModels_FnTable'
       , `RenderModel_TextureMapPtr' } -> `()' #}
-
-
