@@ -1906,7 +1906,7 @@ struct VR_IVROverlay_FnTable
 	EVROverlayError (OPENVR_FNTABLE_CALLTYPE *SetGamepadFocusOverlay)(OPENVR_FNTABLE_ARGS VROverlayHandle_t ulNewFocusOverlay);
 	EVROverlayError (OPENVR_FNTABLE_CALLTYPE *SetOverlayNeighbor)(OPENVR_FNTABLE_ARGS EOverlayDirection eDirection, VROverlayHandle_t ulFrom, VROverlayHandle_t ulTo);
 	EVROverlayError (OPENVR_FNTABLE_CALLTYPE *MoveGamepadFocusToNeighbor)(OPENVR_FNTABLE_ARGS EOverlayDirection eDirection, VROverlayHandle_t ulFrom);
-	EVROverlayError (OPENVR_FNTABLE_CALLTYPE *SetOverlayDualAnalogTransform)(OPENVR_FNTABLE_ARGS VROverlayHandle_t ulOverlay, EDualAnalogWhich eWhich, struct HmdVector2_t & vCenter, float fRadius);
+	EVROverlayError (OPENVR_FNTABLE_CALLTYPE *SetOverlayDualAnalogTransform)(OPENVR_FNTABLE_ARGS VROverlayHandle_t ulOverlay, EDualAnalogWhich eWhich, struct HmdVector2_t * vCenter, float fRadius);
 	EVROverlayError (OPENVR_FNTABLE_CALLTYPE *GetOverlayDualAnalogTransform)(OPENVR_FNTABLE_ARGS VROverlayHandle_t ulOverlay, EDualAnalogWhich eWhich, struct HmdVector2_t * pvCenter, float * pfRadius);
 	EVROverlayError (OPENVR_FNTABLE_CALLTYPE *SetOverlayTexture)(OPENVR_FNTABLE_ARGS VROverlayHandle_t ulOverlayHandle, struct Texture_t * pTexture);
 	EVROverlayError (OPENVR_FNTABLE_CALLTYPE *ClearOverlayTexture)(OPENVR_FNTABLE_ARGS VROverlayHandle_t ulOverlayHandle);
