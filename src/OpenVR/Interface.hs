@@ -80,6 +80,7 @@ makeVrCall 'ivrSystemPollNextEvent_ "ivrSystemPollNextEvent'"
 makeVrCall 'ivrSystemGetStringTrackedDeviceProperty_ "ivrSystemGetStringTrackedDeviceProperty'"
 makeVrCall 'ivrSystemGetTrackedDeviceClass_ "ivrSystemGetTrackedDeviceClass"
 makeVrCall 'ivrSystemIsTrackedDeviceConnected_ "ivrSystemIsTrackedDeviceConnected"
+makeVrCall 'ivrSystemGetControllerRoleForTrackedDeviceIndex_ "ivrSystemGetControllerRoleForTrackedDeviceIndex"
 
 makeVrCall 'ivrRenderModelsLoadRenderModel_Async_ "ivrRenderModelsLoadRenderModel_Async"
 makeVrCall 'ivrRenderModelsLoadTexture_Async_ "ivrRenderModelsLoadTexture_Async"

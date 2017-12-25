@@ -32,31 +32,31 @@ peekEnum  = liftM (toEnum . fromIntegral) . peek
  
  
 {#enum EVREye {}
- with prefix="EVREye" deriving (Show, Eq)#}
+ with prefix="EVREye" deriving (Show, Eq, Ord)#}
 {#enum ETextureType {}
- with prefix="ETextureType" deriving (Show, Eq)#}
+ with prefix="ETextureType" deriving (Show, Eq, Ord)#}
 {#enum EColorSpace {}
-  with prefix="EColorSpace" deriving (Show, Eq)#}
+  with prefix="EColorSpace" deriving (Show, Eq, Ord)#}
 {#enum ETrackingResult {}
-  with prefix="ETrackingResult" deriving (Show, Eq)#}
+  with prefix="ETrackingResult" deriving (Show, Eq, Ord)#}
 {#enum ETrackedDeviceClass {}
-  with prefix="ETrackedDeviceClass" deriving (Show, Eq) #}
+  with prefix="ETrackedDeviceClass" deriving (Show, Eq, Ord) #}
 {#enum ETrackedControllerRole {}
-  with prefix="ETrackedControllerRole" deriving (Show, Eq) #}
+  with prefix="ETrackedControllerRole" deriving (Show, Eq, Ord) #}
 {#enum ETrackingUniverseOrigin {}
-  with prefix="ETrackingUniverseOrigin" deriving (Show, Eq) #}
+  with prefix="ETrackingUniverseOrigin" deriving (Show, Eq, Ord) #}
 --TODO: this needs the same treatment as VREventType
 {#enum ETrackedDeviceProperty {}
-  with prefix="ETrackedDeviceProperty" deriving (Show, Eq) #}
+  with prefix="ETrackedDeviceProperty" deriving (Show, Eq, Ord) #}
 
 {#enum ETrackedPropertyError {}
-  with prefix="ETrackedPropertyError" deriving (Show, Eq) #}
+  with prefix="ETrackedPropertyError" deriving (Show, Eq, Ord) #}
 {#enum EVRSubmitFlags {}
- with prefix="EVRSubmitFlags" deriving (Show, Eq)#}
+ with prefix="EVRSubmitFlags" deriving (Show, Eq, Ord)#}
 {#enum EVRState {}
-  with prefix="EVRState" deriving (Show, Eq) #}
+  with prefix="EVRState" deriving (Show, Eq, Ord) #}
 {#enum EVREventType {}
- with prefix = "EVREventType" deriving (Show, Eq, Bounded)#}
+ with prefix = "EVREventType" deriving (Show, Eq, Ord, Bounded)#}
 
 allVREventTypes :: Set CUInt
 allVREventTypes = S.fromList $ map (fromIntegral . fromEnum) ([minBound .. maxBound] :: [EVREventType])
@@ -64,7 +64,7 @@ allVREventTypes = S.fromList $ map (fromIntegral . fromEnum) ([minBound .. maxBo
 data VREventType
   = KnownEvent EVREventType
   | UnknownEvent CUInt 
-  deriving (Show, Eq)
+  deriving (Show, Eq, Ord)
 
 instance Storable VREventType where
   sizeOf _ = sizeOf (undefined :: CUInt)
@@ -79,73 +79,73 @@ instance Storable VREventType where
 
 
 {#enum EDeviceActivityLevel {}
-  with prefix="EDeviceActivityLevel_k" deriving (Show, Eq) #}
+  with prefix="EDeviceActivityLevel_k" deriving (Show, Eq, Ord) #}
 {#enum EVRButtonId {}
- with prefix = "EVRButtonId_k" deriving (Show, Eq)#}
+ with prefix = "EVRButtonId_k" deriving (Show, Eq, Ord)#}
 {#enum EVRMouseButton {}
-  with prefix="EVRMouseButton" deriving (Show, Eq) #}
+  with prefix="EVRMouseButton" deriving (Show, Eq, Ord) #}
 {#enum EHiddenAreaMeshType {upcaseFirstLetter}
-  with prefix="EHiddenAreaMeshType_k" deriving (Show, Eq) #}
+  with prefix="EHiddenAreaMeshType_k" deriving (Show, Eq, Ord) #}
 {#enum EVRControllerAxisType {upcaseFirstLetter}
-  with prefix="EVRControllerAxisType_k" deriving (Show, Eq) #}
+  with prefix="EVRControllerAxisType_k" deriving (Show, Eq, Ord) #}
 {#enum EVRControllerEventOutputType {}
-  with prefix="EVRControllerEventOutputType" deriving (Show, Eq) #}
+  with prefix="EVRControllerEventOutputType" deriving (Show, Eq, Ord) #}
 {#enum ECollisionBoundsStyle {}
-  with prefix="ECollisionBoundsStyle" deriving (Show, Eq) #}
+  with prefix="ECollisionBoundsStyle" deriving (Show, Eq, Ord) #}
 {#enum EVROverlayError {}
-  with prefix="EVROverlayError" deriving (Show, Eq) #}
+  with prefix="EVROverlayError" deriving (Show, Eq, Ord) #}
 {#enum EVRApplicationType {}
-  with prefix="EVRApplicationType" deriving (Show, Eq)#}
+  with prefix="EVRApplicationType" deriving (Show, Eq, Ord)#}
 {#enum EVRFirmwareError {}
-  with prefix="EVRFirmwareError" deriving (Show, Eq) #}
+  with prefix="EVRFirmwareError" deriving (Show, Eq, Ord) #}
 {#enum EVRNotificationError {}
-  with prefix="EVRNotificationError" deriving (Show, Eq) #}
+  with prefix="EVRNotificationError" deriving (Show, Eq, Ord) #}
 {#enum EVRInitError {}
-  with prefix="EVRInitError" deriving (Show, Eq)#}
+  with prefix="EVRInitError" deriving (Show, Eq, Ord)#}
 {#enum EVRScreenshotType {}
-  with prefix="EVRScreenshotType" deriving (Show, Eq) #}
+  with prefix="EVRScreenshotType" deriving (Show, Eq, Ord) #}
 {#enum EVRScreenshotPropertyFilenames {}
-  with prefix="EVRScreenshotPropertyFilenames" deriving (Show, Eq) #}
+  with prefix="EVRScreenshotPropertyFilenames" deriving (Show, Eq, Ord) #}
 {#enum EVRTrackedCameraError {}
-  with prefix="EVRTrackedCameraError" deriving (Show, Eq) #}
+  with prefix="EVRTrackedCameraError" deriving (Show, Eq, Ord) #}
 {#enum EVRTrackedCameraFrameType {}
-  with prefix="EVRTrackedCameraFrameType" deriving (Show, Eq) #}
+  with prefix="EVRTrackedCameraFrameType" deriving (Show, Eq, Ord) #}
 {#enum EVRApplicationError {}
-  with prefix="EVRApplicationError" deriving (Show, Eq) #}
+  with prefix="EVRApplicationError" deriving (Show, Eq, Ord) #}
 {#enum EVRApplicationProperty {}
-  with prefix="EVRApplicationProperty" deriving (Show, Eq) #}
+  with prefix="EVRApplicationProperty" deriving (Show, Eq, Ord) #}
 {#enum EVRApplicationTransitionState {}
-  with prefix="EVRApplicationTransitionState" deriving (Show, Eq) #}
+  with prefix="EVRApplicationTransitionState" deriving (Show, Eq, Ord) #}
 {#enum ChaperoneCalibrationState {}
-  with prefix="ChaperoneCalibrationState" deriving (Show, Eq) #}
+  with prefix="ChaperoneCalibrationState" deriving (Show, Eq, Ord) #}
 {#enum EChaperoneConfigFile {}
-  with prefix="EChaperoneConfigFile" deriving (Show, Eq) #}
+  with prefix="EChaperoneConfigFile" deriving (Show, Eq, Ord) #}
 {#enum EChaperoneImportFlags {}
-  with prefix="EChaperoneImportFlags" deriving (Show, Eq) #}
+  with prefix="EChaperoneImportFlags" deriving (Show, Eq, Ord) #}
 {#enum EVRCompositorError {}
- with prefix="EVRCompositorError" deriving (Show, Eq)#}
-{#enum VROverlayInputMethod {} deriving (Show, Eq) #}
-{#enum VROverlayTransformType {} deriving (Show, Eq) #}
-{#enum VROverlayFlags {} deriving (Show, Eq) #}
-{#enum VRMessageOverlayResponse {} deriving (Show, Eq) #}
+ with prefix="EVRCompositorError" deriving (Show, Eq, Ord)#}
+{#enum VROverlayInputMethod {} deriving (Show, Eq, Ord) #}
+{#enum VROverlayTransformType {} deriving (Show, Eq, Ord) #}
+{#enum VROverlayFlags {} deriving (Show, Eq, Ord) #}
+{#enum VRMessageOverlayResponse {} deriving (Show, Eq, Ord) #}
 {#enum EGamepadTextInputMode {}
-  with prefix="EGamepadTextInputMode_k" deriving (Show, Eq) #}
+  with prefix="EGamepadTextInputMode_k" deriving (Show, Eq, Ord) #}
 {#enum EGamepadTextInputLineMode {}
-  with prefix="EGamepadTextInputLineMode_k" deriving (Show, Eq) #}
+  with prefix="EGamepadTextInputLineMode_k" deriving (Show, Eq, Ord) #}
 {#enum EOverlayDirection {}
-  with prefix="EOverlayDirection" deriving (Show, Eq) #}
+  with prefix="EOverlayDirection" deriving (Show, Eq, Ord) #}
 {#enum EVROverlayIntersectionMaskPrimitiveType {}
-  with prefix="EVROverlayIntersectionMaskPrimitiveType" deriving (Show, Eq) #}
+  with prefix="EVROverlayIntersectionMaskPrimitiveType" deriving (Show, Eq, Ord) #}
 {#enum EVRRenderModelError {}
- with prefix="EVRRenderModelError" deriving (Show, Eq)#}
+ with prefix="EVRRenderModelError" deriving (Show, Eq, Ord)#}
 {#enum EVRComponentProperty {}
-  with prefix="EVRComponentProperty" deriving (Show, Eq) #}
-{#enum EVRNotificationType {} deriving (Show, Eq) #}
-{#enum EVRNotificationStyle {} deriving (Show, Eq) #}
+  with prefix="EVRComponentProperty" deriving (Show, Eq, Ord) #}
+{#enum EVRNotificationType {} deriving (Show, Eq, Ord) #}
+{#enum EVRNotificationStyle {} deriving (Show, Eq, Ord) #}
 {#enum EVRSettingsError {}
-  with prefix="EVRSettingsError" deriving (Show, Eq) #}
+  with prefix="EVRSettingsError" deriving (Show, Eq, Ord) #}
 {#enum EVRScreenshotError {}
-  with prefix="EVRScreenshotError" deriving (Show, Eq) #}
+  with prefix="EVRScreenshotError" deriving (Show, Eq, Ord) #}
 
 type PropertyContainerHandle_t = {#type PropertyContainerHandle_t#}
 {#typedef PropertyContainerHandle_t PropertyContainerHandle_t#}
@@ -736,6 +736,12 @@ deriving instance Storable VR_IVRDriverManager_FnTable
       , castPtr `Ptr VR_IVRSystem_FnTable'
       , alloca- `CUInt' peek*
       , alloca- `CUInt' peek* } -> `()'#}
+
+{#fun VR_IVRSystem_FnTable->GetControllerRoleForTrackedDeviceIndex as ivrSystemGetControllerRoleForTrackedDeviceIndex_
+      { coerce `VR_IVRSystem_FnTable'
+      , castPtr `Ptr VR_IVRSystem_FnTable'
+      , `TrackedDeviceIndex' } -> `ETrackedControllerRole' #}
+
 
 {#fun VR_IVRSystem_GetProjectionMatrix as ivrSystemGetProjectionMatrix_
       { coerce `VR_IVRSystem_FnTable'
