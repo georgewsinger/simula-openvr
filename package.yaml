@@ -50,9 +50,10 @@ extra-libraries:
   - openvr_api
 
 include-dirs:
-  - openvr/headers
   - cbits
 
+extra-include-dirs:
+  - openvr/headers
 
 library:
   source-dirs: src
